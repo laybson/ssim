@@ -4,12 +4,12 @@
   "description": "SSIM backend",
   "main": "server.js",
   "scripts": {
-    "client-install": "cd ../ssim && npm install",
+    "client-install": "cd client && npm install",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "cd ../ssim && npm start",
+    "client": "cd client && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd ../ssim && npm install && npm run build"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Laybson",
   "license": "ISC",
