@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const supplies = require('./routes/api/supplies');
 const grades = require('./routes/api/grades');
@@ -23,6 +24,16 @@ mongoose.connect(db)
 app.use('/api/supplies', supplies);
 app.use('/api/grades', grades);
 app.use('/api/students', students);
+
+// Serve static assets if in production
+if(process.env.NODE_ENV === 'production') {
+    // Set static folder
+    app.use(express.static('../ssim/build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'ssim', 'build', 'index.html'))
+    });
+}
 
 const port = process.env.PORT || 5000;
 

@@ -8,7 +8,8 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "cd ../ssim && npm start",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd ../ssim && npm install && npm run build"
   },
   "author": "Laybson",
   "license": "ISC",
