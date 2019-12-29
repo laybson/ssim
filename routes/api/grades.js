@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
 
 // Grade Model
 const Grade = require("../../models/Grade");
@@ -14,8 +15,8 @@ router.get('/', (req, res) => {
 
 // @route   POST api/grades
 // @desc    Create A Grade
-// @access  Public
-router.post('/', (req, res) => {
+// @access  Private
+router.post('/', auth, (req, res) => {
     const newGrade = new Grade({
         name: req.body.name,
         shift: req.body.shift
@@ -26,8 +27,8 @@ router.post('/', (req, res) => {
 
 // @route   DELETE api/grades/:id
 // @desc    Delete A Grade
-// @access  Public
-router.delete('/:id', (req, res) => {
+// @access  Private
+router.delete('/:id', auth, (req, res) => {
     Grade.findById(req.params.id)
         .then(supply => supply.remove().then(() => res.json({success: true})))
         .catch(err => res.status(404).json({success: false}))

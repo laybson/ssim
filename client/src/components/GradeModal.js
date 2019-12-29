@@ -11,12 +11,17 @@ import {
 } from 'reactstrap';
 import { connect } from 'react-redux';
 import { addGrade } from '../actions/gradeActions';
+import PropTypes from 'prop-types';
 
 class GradeModal extends Component {
     state = {
         modal: false,
         name: '',
         shift: ''
+    }
+
+    static propTypes = {
+        isAuthenticated: PropTypes.bool
     }
 
     toggle = () => {
@@ -50,13 +55,17 @@ class GradeModal extends Component {
     render() {
         return(
             <div>
-                <Button
-                    color="dark"
-                    style={{marginBottom: '2re'}}
-                    onClick={this.toggle}
-                >
-                    Adicionar Turma
-                </Button>
+                { this.props.isAuthenticated ? 
+                    <Button
+                        color="dark"
+                        style={{marginBottom: '2rem'}}
+                        onClick={this.toggle}
+                    >
+                        Adicionar Turma
+                    </Button> :
+                    null
+                }
+                
                 <Modal
                     isOpen={this.state.modal}
                     toggle={this.toggle}
@@ -75,6 +84,7 @@ class GradeModal extends Component {
                                     name="name"
                                     id="grade"
                                     placeholder="Digite o nome da turma"
+                                    className="mb-3"
                                     onChange={this.onChange} 
                                 />
                                 <Label for="grade">
@@ -85,6 +95,7 @@ class GradeModal extends Component {
                                     name="shift"
                                     id="grade"
                                     placeholder="Digite o turno da turma"
+                                    className="mb-3"
                                     onChange={this.onChange} 
                                 />
                                 <Button
@@ -104,7 +115,8 @@ class GradeModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    grade: state.grade
+    grade: state.grade,
+    isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps, { addGrade })(GradeModal);

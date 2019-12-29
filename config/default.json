@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://laybson:laybson123@ssimcluster-li0f0.gcp.mongodb.net/test?retryWrites=true&w=majority",
+    "jwtSecret": "ssim_myJwtSecret"
+}

@@ -6,6 +6,12 @@ import { getGrades, deleteGrade } from '../actions/gradeActions';
 import PropTypes from 'prop-types';
 
 class GradeList extends Component {
+    static propTypes = {
+        getGrades: PropTypes.func.isRequired,
+        grade: PropTypes.object.isRequired,
+        isAuthenticated: PropTypes.bool
+    }
+
     componentDidMount() {
         this.props.getGrades();
     }
@@ -23,14 +29,18 @@ class GradeList extends Component {
                         {grades.map(({_id, name, shift}) => (
                             <CSSTransition key={_id} timeout={500} classNames="fade">
                                 <ListGroupItem>
-                                    <Button 
-                                        className="remove-btn"
-                                        color="danger"
-                                        size="sm"
-                                        onClick={this.onDeleteClick.bind(this, _id)}
-                                    >
-                                        &times;
-                                    </Button>
+                                    { this.props.isAuthenticated ?
+                                        <Button 
+                                            className="remove-btn"
+                                            color="danger"
+                                            size="sm"
+                                            onClick={this.onDeleteClick.bind(this, _id)}
+                                        >
+                                            &times;
+                                        </Button> :
+                                        null
+                                    }
+                                    
                                     {name+" "+shift}
                                 </ListGroupItem>
                             </CSSTransition>
@@ -42,13 +52,9 @@ class GradeList extends Component {
     }
 }
 
-GradeList.propTypes = {
-    getGrades: PropTypes.func.isRequired,
-    grade: PropTypes.object.isRequired
-}
-
 const mapStateToProps = (state) => ({
-    grade: state.grade
+    grade: state.grade,
+    isAuthenticated: state.auth.isAuthenticated
 })
 
 export default connect(
