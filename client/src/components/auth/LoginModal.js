@@ -74,7 +74,7 @@ class LoginModal extends Component {
             email, password
         }
 
-        // Attempt to logi
+        // Attempt to login
         this.props.login(user);
     }
 

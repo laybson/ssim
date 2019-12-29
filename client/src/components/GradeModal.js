@@ -12,6 +12,7 @@ import {
 import { connect } from 'react-redux';
 import { addGrade } from '../actions/gradeActions';
 import PropTypes from 'prop-types';
+import { clearErrors } from '../actions/errorActions';
 
 class GradeModal extends Component {
     state = {
@@ -21,10 +22,26 @@ class GradeModal extends Component {
     }
 
     static propTypes = {
-        isAuthenticated: PropTypes.bool
+        isAuthenticated: PropTypes.bool,
+        error: PropTypes.object.isRequired,
+        clearErrors: PropTypes.func.isRequired
     }
 
+    componentDidUpdate(prevProps) {
+        const { error } = this.props;
+
+        if(error !== prevProps.error) {
+            if(error.id === 'ADD_GRADE_FAIL') {
+                this.setState({ msg: error.msg.msg });
+            } else {
+                this.setState({ msg: null })
+            }
+        }
+    }
+
+
     toggle = () => {
+        this.props.clearErrors();
         this.setState({
             modal: !this.state.modal
         });
@@ -47,7 +64,7 @@ class GradeModal extends Component {
 
         // Add grade via addGrade action
         this.props.addGrade(newGrade);
-
+        
         // Close modal
         this.toggle();
     }
@@ -116,7 +133,8 @@ class GradeModal extends Component {
 
 const mapStateToProps = (state) => ({
     grade: state.grade,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    error: state.error
 });
 
-export default connect(mapStateToProps, { addGrade })(GradeModal);
+export default connect(mapStateToProps, { addGrade, clearErrors })(GradeModal);

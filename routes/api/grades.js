@@ -17,6 +17,13 @@ router.get('/', (req, res) => {
 // @desc    Create A Grade
 // @access  Private
 router.post('/', auth, (req, res) => {
+    const { name, shift } = req.body;
+
+    // Simple validation
+    if(!name || !shift) {
+        return res.status(400).json({ msg: 'Por favor, preencha todos os campos corretamente'});
+    }
+
     const newGrade = new Grade({
         name: req.body.name,
         shift: req.body.shift

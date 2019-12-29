@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_GRADES, ADD_GRADE, DELETE_GRADE, GRADES_LOADING } from './types';
+import { GET_GRADES, ADD_GRADE, ADD_GRADE_FAIL, DELETE_GRADE, GRADES_LOADING } from './types';
 import { tokenConfig } from './authActions';
 import { returnErrors } from './errorActions';
 
@@ -32,9 +32,12 @@ export const addGrade = (grade) => (dispatch, getState) => {
             type: ADD_GRADE,
             payload: res.data
         }))
-        .catch(err => dispatch(
-            returnErrors(err.response.data, err.response.status))
-        )       
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status, 'ADD_GRADE_FAIL'))
+            dispatch({
+                type: ADD_GRADE_FAIL
+            })
+        })       
 }
 
 export const setGradesLoading = () => {
