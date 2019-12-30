@@ -11,6 +11,14 @@ const SupplySchema = new Schema({
     grade: {
         type: GradeId,
         required: true
+    },
+    didactic: {
+        type: Boolean,
+        default: false
+    },
+    quantity: {
+        type: Number,
+        required: true
     }
 });
 

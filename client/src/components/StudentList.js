@@ -2,41 +2,44 @@ import React, { Component } from 'react';
 import { Container, ListGroup, ListGroupItem } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { getGrades, deleteGrade } from '../actions/gradeActions';
+import { getGradeStudents, deleteStudent } from '../actions/studentActions';
 import PropTypes from 'prop-types';
+import StudentCard from './StudentCard';
 
-import GradeCard from './GradeCard';
-
-class GradeList extends Component {
+class StudentList extends Component {
     static propTypes = {
-        getGrades: PropTypes.func.isRequired,
+        getGradeStudents: PropTypes.func.isRequired,
         grade: PropTypes.object.isRequired,
+        student: PropTypes.object.isRequired,
         isAuthenticated: PropTypes.bool
     }
 
-    componentDidMount() {
-        this.props.getGrades();
+    componentDidMount = () => {        
+        if(this.props.grade.id) {
+            this.props.getGradeStudents(this.props.grade.id);
+        }
     }
 
     onDeleteClick = (id) => {
-        this.props.deleteGrade(id);
+        this.props.deleteStudent(id);
     }
 
     render() {
-        const { grades } = this.props.grade;
+        const students = this.props.student.students;        
+
         return(
             <Container>
                 <ListGroup>
                     <TransitionGroup className="grade-list">
-                        {grades.map((i, {_id, name, shift}) => (
+                        {students.map((i) => (
                             <CSSTransition key={i._id} timeout={500} classNames="fade">
                                 <ListGroupItem>
-                                    <GradeCard 
-                                        grade={ i }/>                                    
+                                <StudentCard
+                                    student={ i } />                                  
                                 </ListGroupItem>
                             </CSSTransition>
                         ))}
-                    </TransitionGroup>
+                        </TransitionGroup>
                 </ListGroup>
             </Container>
         )
@@ -44,11 +47,11 @@ class GradeList extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    grade: state.grade,
+    student: state.student,
     isAuthenticated: state.auth.isAuthenticated
 })
 
 export default connect(
     mapStateToProps, 
-    { getGrades, deleteGrade }
-)(GradeList);
+    { getGradeStudents, deleteStudent }
+)(StudentList);

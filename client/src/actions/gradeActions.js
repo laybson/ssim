@@ -15,6 +15,18 @@ export const getGrades = () => dispatch => {
         )
 }
 
+export const getGradeById = id => dispatch => {
+    dispatch(setGradesLoading());
+    axios.get(`/api/grades/${id}`)
+        .then(res => dispatch({
+            type: GET_GRADES,
+            payload: res.data
+        }))
+        .catch(err => dispatch(
+            returnErrors(err.response.data, err.response.status))
+        )
+}
+
 export const deleteGrade = (id) => (dispatch, getState) => {
     axios.delete(`/api/grades/${id}`, tokenConfig(getState))
         .then(res => dispatch({

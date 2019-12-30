@@ -3,6 +3,19 @@ export const ADD_GRADE = 'ADD_GRADE';
 export const ADD_GRADE_FAIL = 'ADD_GRADE_FAIL';
 export const DELETE_GRADE = 'DELETE_GRADE';
 export const GRADES_LOADING = 'GRADES_LOADING';
+
+export const GET_SUPPLIES = 'GET_SUPPLIES';
+export const ADD_SUPPLY = 'ADD_SUPPLY';
+export const ADD_SUPPLY_FAIL = 'ADD_SUPPLY_FAIL';
+export const DELETE_SUPPLY = 'DELETE_SUPPLY';
+export const SUPPLIES_LOADING = 'SUPPLIES_LOADING';
+
+export const GET_STUDENTS = 'GET_STUDENTS';
+export const ADD_STUDENT = 'ADD_STUDENT';
+export const ADD_STUDENT_FAIL = 'ADD_STUDENT_FAIL';
+export const DELETE_STUDENT = 'DELETE_STUDENT';
+export const STUDENTS_LOADING = 'STUDENTS_LOADING';
+
 export const USER_LOADING = 'USER_LOADING';
 export const USER_LOADED = 'USER_LOADED';
 export const AUTH_ERROR = 'AUTH_ERROR';

@@ -12,6 +12,14 @@ router.get('/', (req, res) => {
         .then(students => res.json(students))
 });
 
+// @route   GET api/students/grade/:id
+// @desc    Get All grade students
+// @access  Public
+router.get('/grade/:id', (req, res) => {
+    Student.find({ grade: req.params.id })
+        .then(students => res.json(students))
+});
+
 // @route   POST api/students
 // @desc    Create A Student
 // @access  Public
@@ -29,7 +37,7 @@ router.post('/', (req, res) => {
 // @access  Public
 router.delete('/:id', (req, res) => {
     Student.findById(req.params.id)
-        .then(supply => supply.remove().then(() => res.json({success: true})))
+        .then(student => student.remove().then(() => res.json({success: true})))
         .catch(err => res.status(404).json({success: false}))
 });
 

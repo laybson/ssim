@@ -13,6 +13,14 @@ router.get('/', (req, res) => {
         .then(grades => res.json(grades))
 });
 
+// @route   GET api/grades/:id
+// @desc    Get A Grade
+// @access  Public
+router.get('/:id', (req, res) => {
+    Grade.findById(req.params.id)
+        .then(grade => res.json(grade))
+});
+
 // @route   POST api/grades
 // @desc    Create A Grade
 // @access  Private

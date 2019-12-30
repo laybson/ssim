@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const GradeId = Schema.ObjectId;
-const SupplyId = Schema.ObjectId;
+const Supply = Schema.Types.Mixed;
 
 // Create Schema
 const StudentSchema = new Schema({
@@ -13,7 +13,8 @@ const StudentSchema = new Schema({
         type: GradeId,
         required: true
     },
-    returnedSupplies: [SupplyId]
+    returnedSupplies: [Supply],
+    receivedSupplies: [Supply]
 });
 
 module.exports = Student = mongoose.model('student', StudentSchema);

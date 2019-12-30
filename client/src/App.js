@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import AppNavbar from './components/AppNavbar';
-import GradeList from './components/GradeList';
-import GradeModal from './components/GradeModal';
-import { Container } from 'reactstrap';
+import GradePage from './pages/GradePage';
+import GradeListPage from './pages/GradeListPage';
+import HistoryPage from './pages/HistoryPage';
 
 import { Provider } from 'react-redux';
 import store from './store'; 
@@ -18,16 +19,16 @@ class App extends Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <div className="App">
-          <AppNavbar />
-          <Container>
-            <GradeModal />
-            <GradeList />
-          </Container>
-             
-        </div>
-      </Provider>
+      <Router>
+        <Provider store={store}>
+          <div className="App">
+            <AppNavbar />
+            <Route path="/" exact component={GradeListPage} />
+            <Route path="/grade/:id" exact component={GradePage} />
+            <Route path="/history" exact component={HistoryPage} />
+          </div>
+        </Provider>
+      </Router>
     );
   }
 }
