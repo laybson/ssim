@@ -24,12 +24,28 @@ router.get('/grade/:id', (req, res) => {
 // @desc    Create A Student
 // @access  Public
 router.post('/', (req, res) => {
-    const newStudent = new Student({
-        name: req.body.name,
-        grade: req.body.grade
-    });
-
-    newStudent.save().then(student => res.json(student));
+    Student.findById(req.body._id).then(student => {        
+        if(student) {            
+            Student.findByIdAndUpdate(
+                req.body._id, 
+                {
+                    $set: 
+                    {
+                        returnedSupplies: req.body.returnedSupplies,
+                        receivedSupplies: req.body.receivedSupplies
+                    }
+                }
+            ).then(student => res.json(student));
+        } else {
+            const newStudent = new Student({
+                name: req.body.name,
+                grade: req.body.grade
+            });
+        
+            newStudent.save().then(student => res.json(student));
+        }
+    })
+    
 });
 
 // @route   DELETE api/students/:id

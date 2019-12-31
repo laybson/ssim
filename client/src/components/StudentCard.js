@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { deleteStudent } from '../actions/studentActions';
+import StudentModal from './StudentModal';
 
 class StudentCard extends Component {
     static propTypes = {
@@ -20,15 +21,23 @@ class StudentCard extends Component {
             <div>
                 { student.name }
                 { this.props.isAuthenticated ?
-                    <Button 
-                        className="remove-btn"
-                        style={{marginLeft: '1rem'}}
-                        color="danger"
-                        size="sm"
-                        onClick={this.onDeleteClick.bind(this, student._id)}
-                    >
-                        &times;
-                    </Button> :
+                    <Container>
+                        <StudentModal 
+                            student={ student }
+                            receiving= { true }/>
+                        <StudentModal 
+                            student={ student }
+                            returning= { true }/>
+                        <Button 
+                            className="remove-btn"
+                            style={{marginLeft: '1rem'}}
+                            color="danger"
+                            size="sm"
+                            onClick={this.onDeleteClick.bind(this, student._id)}
+                        >
+                            &times;
+                        </Button> 
+                    </Container> :
                     null
                 }
             </div>

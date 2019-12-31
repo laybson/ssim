@@ -18,8 +18,10 @@ class GradeCard extends Component {
         const grade = this.props.grade;
 
         return(
-            <Link to={`/grade/${grade._id}`}>
-                {grade.name+" "+grade.shift}
+            <div>
+                <Link to={`/grade/${grade._id}`}>
+                    {grade.name+" "+grade.shift}
+                </Link>
                 { this.props.isAuthenticated ?
                     <Button 
                         className="remove-btn"
@@ -32,7 +34,8 @@ class GradeCard extends Component {
                     </Button> :
                     null
                 }
-            </Link>
+            </div>
+            
         )
     }
 }

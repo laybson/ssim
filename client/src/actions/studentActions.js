@@ -15,7 +15,7 @@ export const getGradeStudents = id => dispatch => {
         ))
 }
 
-export const addStudent = (student) => (dispatch, getState) => {
+export const addStudent = (student) => (dispatch, getState) => {    
     axios.post('/api/students', student, tokenConfig(getState))
         .then(res => dispatch({
             type: ADD_STUDENT,

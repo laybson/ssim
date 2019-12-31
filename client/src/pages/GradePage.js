@@ -10,6 +10,9 @@ import AddSupplyModal from '../components/AddSupplyModal';
 import AddStudentModal from '../components/AddStudentModal';
 
 class GradePage extends Component {
+    state = {
+        pageGrade: {}
+    }
     static propTypes = {
         isAuthenticated: PropTypes.bool,
         grade: PropTypes.object.isRequired,
@@ -29,7 +32,8 @@ class GradePage extends Component {
     }
 
     render() {
-        const grade = this.props.grade.grades;        
+        console.log("STATE:", this)
+        const grade = this.props.grade.grade;        
                 
         return (      
             <Container>

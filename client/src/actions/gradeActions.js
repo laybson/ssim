@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_GRADES, ADD_GRADE, ADD_GRADE_FAIL, DELETE_GRADE, GRADES_LOADING } from './types';
+import { GET_GRADES, GET_GRADE, ADD_GRADE, ADD_GRADE_FAIL, DELETE_GRADE, GRADES_LOADING } from './types';
 import { tokenConfig } from './authActions';
 import { returnErrors } from './errorActions';
 
@@ -19,7 +19,7 @@ export const getGradeById = id => dispatch => {
     dispatch(setGradesLoading());
     axios.get(`/api/grades/${id}`)
         .then(res => dispatch({
-            type: GET_GRADES,
+            type: GET_GRADE,
             payload: res.data
         }))
         .catch(err => dispatch(

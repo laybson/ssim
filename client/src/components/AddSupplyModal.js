@@ -122,6 +122,7 @@ class AddSupplyModal extends Component {
                                 </Label>
                                 <Input 
                                     type="number"
+                                    min="1"
                                     name="quantity"
                                     id="supply"
                                     placeholder="Digite a quantidade"

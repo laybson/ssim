@@ -108,13 +108,16 @@ class GradeModal extends Component {
                                     Turno
                                 </Label>
                                 <Input 
-                                    type="text"
+                                    type="select"
                                     name="shift"
                                     id="grade"
                                     placeholder="Digite o turno da turma"
                                     className="mb-3"
                                     onChange={this.onChange} 
-                                />
+                                >
+                                    <option>Manhã</option>
+                                    <option>Tarde</option>
+                                </Input>
                                 <Button
                                     color="dark"
                                     style={{marginTop: '2rem'}}

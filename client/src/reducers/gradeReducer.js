@@ -1,7 +1,8 @@
-import { GET_GRADES, ADD_GRADE, ADD_GRADE_FAIL, DELETE_GRADE, GRADES_LOADING } from '../actions/types';
+import { GET_GRADES, GET_GRADE, ADD_GRADE, ADD_GRADE_FAIL, DELETE_GRADE, GRADES_LOADING } from '../actions/types';
 
 const initialState = {
     grades: [],
+    grade: {},
     loading: false
 }
 
@@ -11,6 +12,12 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 grades: action.payload,
+                loading: false
+            };
+        case GET_GRADE:
+            return {
+                ...state,
+                grade: action.payload,
                 loading: false
             };
         case DELETE_GRADE:

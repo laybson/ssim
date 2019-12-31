@@ -1,4 +1,5 @@
 export const GET_GRADES = 'GET_GRADES';
+export const GET_GRADE = 'GET_GRADE';
 export const ADD_GRADE = 'ADD_GRADE';
 export const ADD_GRADE_FAIL = 'ADD_GRADE_FAIL';
 export const DELETE_GRADE = 'DELETE_GRADE';
