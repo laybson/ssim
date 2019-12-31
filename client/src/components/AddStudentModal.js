@@ -19,8 +19,8 @@ class AddStudentModal extends Component {
         modal: false,
         name: '',
         grade: '',
-        received: [],
-        returned: []
+        returned: [],
+        received: []
     }
 
     static propTypes = {
