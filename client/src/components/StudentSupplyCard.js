@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Label, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addStudent } from '../actions/studentActions';
@@ -7,7 +7,8 @@ import { addStudent } from '../actions/studentActions';
 class StudentSupplyCard extends Component {
     state = {
         isReceived: false,
-        isReturned: false
+        isReturned: false,
+        receivedQuantity: 0
     }
 
     static propTypes = {
@@ -20,28 +21,34 @@ class StudentSupplyCard extends Component {
     }
 
     componentDidMount = () => {
-        this.setState({isReceived:this.isReceivedSupply(this.props.supply,1)})
+        this.setState({isReceived:this.isFullyReceivedSupply(this.props.supply)})
         this.setState({isReturned:this.isReturnedSupply(this.props.supply)})
     }
 
-    getSupplyQuantity = (supply) => {
-        console.log(this.props)
+    isReceivedSupply = (supply) => {
+        return this.props.student.receivedSupplies.some(ss => ss.id === supply._id)
     }
 
-    isReceivedSupply = (supply, quantity) => {
+    isFullyReceivedSupply = (supply) => {
         return this.props.student.receivedSupplies.some(ss => 
-            (ss.id === supply._id && ss.quantity >= quantity))
+            (ss.id === supply._id && ss.quantity >= supply.quantity))
     }
 
     isReturnedSupply = (supply) => {
         return this.props.student.returnedSupplies.some(ss => ss.id === supply._id)
     }
 
-    receiveSupply = (supply, quantity) => {        
-        if(!this.isReceivedSupply(supply, quantity)){
-            this.props.student.receivedSupplies = [{id: supply._id, quantity: quantity}, ...this.props.student.receivedSupplies]
+    receiveSupply = (supply, quantity) => {
+        if(!this.isReceivedSupply(supply)){
+            if(quantity && quantity>0)
+                this.props.student.receivedSupplies = [{id: supply._id, quantity: quantity}, ...this.props.student.receivedSupplies]
+        } else if (!this.isFullyReceivedSupply(supply)){
+            let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
+            if(ss) {
+                ss.quantity = parseInt(ss.quantity) + parseInt(quantity);
+            }                
         }
-        if(this.isReceivedSupply(supply, quantity)){
+        if(this.isFullyReceivedSupply(supply)){
             this.setState({isReceived:true})
         }
     }
@@ -55,11 +62,16 @@ class StudentSupplyCard extends Component {
         }
     }
 
-    removeReceive = (supply) => {
-        if(this.isReceivedSupply(supply, 1)){
-            this.props.student.receivedSupplies = this.props.student.receivedSupplies.filter(ss => ss.id !== supply._id);
+    removeReceive = (supply, quantity) => {
+        if(this.isReceivedSupply(supply)){
+            let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
+            if(ss) {
+                ss.quantity = parseInt(ss.quantity) - parseInt(quantity);
+            }
+            if(ss.quantity <= 0)
+                this.props.student.receivedSupplies = this.props.student.receivedSupplies.filter(ss => ss.id !== supply._id);
         }
-        if(!this.isReceivedSupply(supply, 1)){
+        if(!this.isFullyReceivedSupply(supply)){
             this.setState({isReceived:false})
         }
     }
@@ -74,11 +86,17 @@ class StudentSupplyCard extends Component {
     }
 
     onReceiveClick = (supply) => {
-        this.receiveSupply(supply, 1);
+        this.receiveSupply(supply, this.state.receivedQuantity);
     }
 
     onReturnClick = (supply) => {
         this.returnSupply(supply);
+    }
+
+    onChange = (e) => {        
+        this.setState({
+            [e.target.name]: e.target.value
+        });
     }
 
     showButton = (supply) => {
@@ -86,33 +104,67 @@ class StudentSupplyCard extends Component {
             return null;
         }
         if(this.props.receiving){
-            if(this.isReceivedSupply(supply, 1)){
+            if(this.isFullyReceivedSupply(supply)){
                 return(
-                    <Button 
-                        className="remove-btn"
-                        style={{marginLeft: '1rem'}}
-                        color="dark"
-                        size="sm"
-                        onClick={this.removeReceive.bind(this, supply)}
-                    >
-                        Remover Recebimento
-                    </Button>
+                    <div>
+                        <Label for="supply">
+                            Quantidade Removida
+                        </Label>
+                        <Input 
+                            type="number"
+                            min="0"
+                            name="receivedQuantity"
+                            id="supply"
+                            placeholder="Digite a quantidade removida"
+                            className="mb-3"
+                            onChange={this.onChange} 
+                        />
+                        <Button 
+                            className="remove-btn"
+                            style={{marginLeft: '1rem'}}
+                            color="dark"
+                            size="sm"
+                            onClick={this.removeReceive.bind(this, supply, this.state.receivedQuantity)}
+                        >
+                            Remover Recebimento
+                        </Button>
+                    </div>
+                    
                 )
             }
-            if(!this.isReceivedSupply(supply, 1)){
+            if(!this.isFullyReceivedSupply(supply)){
                 return(
-                    <Button 
-                        className="remove-btn"
-                        style={{marginLeft: '1rem'}}
-                        color="dark"
-                        size="sm"
-                        onClick={this.onReceiveClick.bind(this, supply)}
-                    >
-                        Receber
-                    </Button>
+                    <div>
+                        <Label for="supply">
+                            Quantidade Recebida
+                        </Label>
+                        <Input 
+                            type="number"
+                            min="0"
+                            name="receivedQuantity"
+                            id="supply"
+                            placeholder="Digite a quantidade recebida"
+                            className="mb-3"
+                            onChange={this.onChange} 
+                        />                    
+                        <Button 
+                            className="remove-btn"
+                            style={{marginLeft: '1rem'}}
+                            color="dark"
+                            size="sm"
+                            onClick={this.onReceiveClick.bind(this, supply)}
+                        >
+                            Receber
+                        </Button>
+                    </div>
                 )
             }            
         } else if(this.props.returning){
+            if(!this.isFullyReceivedSupply(supply)){
+                return(
+                    <div>Material não recebido</div>
+                )
+            }
             if(this.isReturnedSupply(supply)){
                 return(
                     <Button 

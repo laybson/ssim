@@ -67,7 +67,7 @@ class AddSupplyModal extends Component {
     onSubmit = (e) => {
         e.preventDefault();
 
-        this.grade = this.props.grade.grades._id
+        this.grade = this.props.grade.grade._id
 
         const newSupply = {
             name: this.state.name,
@@ -75,7 +75,6 @@ class AddSupplyModal extends Component {
             quantity: this.state.quantity,
             didactic: this.state.didactic
         }
-        console.log(newSupply)
 
         this.props.addSupply(newSupply);
         

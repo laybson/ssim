@@ -32,7 +32,6 @@ class GradePage extends Component {
     }
 
     render() {
-        console.log("STATE:", this)
         const grade = this.props.grade.grade;        
                 
         return (      
@@ -44,13 +43,13 @@ class GradePage extends Component {
                 </Row>
                 <Row>
                     <Col xs="6">
-                        Material
+                        Materiais
                         <AddSupplyModal />
                         <SupplyList 
                             grade={ {id:this.props.match.params.id} }/>
                     </Col>
                     <Col xs="6">
-                        Alunos
+                        Estudantes
                         <AddStudentModal />
                         <StudentList 
                             grade={ {id:this.props.match.params.id} }/>
