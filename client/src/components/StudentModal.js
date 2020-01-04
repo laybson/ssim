@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
 import { addStudent } from '../actions/studentActions';
+import { addHistory } from '../actions/historyActions';
 import StudentSuppliesList from './StudentSuppliesList';
 
 class StudentModal extends Component {
@@ -57,11 +58,34 @@ class StudentModal extends Component {
         });
     }
 
+    historicalFact = () => {
+        const student = {
+            name: this.props.student.name,
+            receivedSupplies: this.props.student.receivedSupplies,
+            returnedSupplies: this.props.student.returnedSupplies
+        }
+        const grade = {
+            name: this.props.grade.grade.name,
+            shift: this.props.grade.grade.shift
+        }
+        const user = {
+            name: this.props.auth.user.name,
+            email: this.props.auth.user.email
+        }
+        return {
+            user: user,
+            student: student,
+            grade: grade
+        }
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
 
         const renewStudent = this.props.student
+        const historicalFact = this.historicalFact()
         this.props.addStudent(renewStudent);
+        this.props.addHistory(historicalFact);
         
         this.toggle();
     }
@@ -196,7 +220,8 @@ class StudentModal extends Component {
 const mapStateToProps = (state) => ({
     grade: state.grade,
     isAuthenticated: state.auth.isAuthenticated,
+    auth: state.auth,
     error: state.error
 });
 
-export default connect(mapStateToProps, { clearErrors, addStudent })(StudentModal);
+export default connect(mapStateToProps, { clearErrors, addStudent, addHistory })(StudentModal);

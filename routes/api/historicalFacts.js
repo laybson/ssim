@@ -18,9 +18,8 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     const newHistoricalFact = new HistoricalFact({
         user: req.body.user,
-        grade: req.body.grade,
         student: req.body.student,
-        supplies: req.body.supplies
+        grade: req.body.grade,
     });
 
     newHistoricalFact.save().then(historicalFact => res.json(historicalFact));

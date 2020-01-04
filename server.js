@@ -6,6 +6,7 @@ const config = require('config');
 const supplies = require('./routes/api/supplies');
 const grades = require('./routes/api/grades');
 const students = require('./routes/api/students');
+const history = require('./routes/api/historicalFacts');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
 
@@ -30,6 +31,7 @@ mongoose.connect(db, {
 app.use('/api/supplies', supplies);
 app.use('/api/grades', grades);
 app.use('/api/students', students);
+app.use('/api/historicalFacts', history);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 

@@ -27,3 +27,8 @@ export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const GET_ERRORS = 'GET_ERRORS';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+
+export const GET_HISTORY = 'GET_HISTORY';
+export const ADD_HISTORY = 'ADD_HISTORY';
+export const HISTORY_LOADING = 'HISTORY_LOADING';
+export const ADD_HISTORY_FAIL = 'ADD_HISTORY_FAIL';

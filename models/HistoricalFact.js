@@ -1,25 +1,23 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const GradeId = Schema.ObjectId;
-const SupplyId = Schema.ObjectId;
-const UserId = Schema.ObjectId;
-const StudentId = Schema.ObjectId;
+const User = Schema.Types.Mixed;
+const Student = Schema.Types.Mixed;
+const Grade = Schema.Types.Mixed;
 
 // Create Schema
-const HistoricalFact = new Schema({
+const HistoricalFactSchema = new Schema({
     user: {
-        type: UserId,
-        required: true
-    },
-    grade: {
-        type: GradeId,
+        type: User,
         required: true
     },
     student: {
-        type: StudentId,
+        type: Student,
         required: true
     },
-    supplies: [SupplyId],
+    grade: {
+        type: Grade,
+        required: true
+    },
     register_date: {
         type: Date,
         default: Date.now

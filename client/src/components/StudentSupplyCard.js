@@ -8,7 +8,8 @@ class StudentSupplyCard extends Component {
     state = {
         isReceived: false,
         isReturned: false,
-        receivedQuantity: 0
+        incomplete: false,
+        obs: ''
     }
 
     static propTypes = {
@@ -23,6 +24,7 @@ class StudentSupplyCard extends Component {
     componentDidMount = () => {
         this.setState({isReceived:this.isFullyReceivedSupply(this.props.supply)})
         this.setState({isReturned:this.isReturnedSupply(this.props.supply)})
+        this.setState({incomplete:this.isReceivedSupply(this.props.supply)&&!this.isFullyReceivedSupply(this.props.supply)})
     }
 
     isReceivedSupply = (supply) => {
@@ -31,25 +33,26 @@ class StudentSupplyCard extends Component {
 
     isFullyReceivedSupply = (supply) => {
         return this.props.student.receivedSupplies.some(ss => 
-            (ss.id === supply._id && ss.quantity >= supply.quantity))
+            (ss.id === supply._id && !ss.incomplete))
     }
 
     isReturnedSupply = (supply) => {
         return this.props.student.returnedSupplies.some(ss => ss.id === supply._id)
     }
 
-    receiveSupply = (supply, quantity) => {
+    receiveSupply = (supply, incomplete, obs) => {
         if(!this.isReceivedSupply(supply)){
-            if(quantity && quantity>0)
-                this.props.student.receivedSupplies = [{id: supply._id, quantity: quantity}, ...this.props.student.receivedSupplies]
+            this.props.student.receivedSupplies = [{id: supply._id, incomplete: incomplete, obs: obs}, ...this.props.student.receivedSupplies]
         } else if (!this.isFullyReceivedSupply(supply)){
             let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
             if(ss) {
-                ss.quantity = parseInt(ss.quantity) + parseInt(quantity);
+                ss.incomplete = incomplete;
+                ss.obs = obs;
             }                
         }
         if(this.isFullyReceivedSupply(supply)){
             this.setState({isReceived:true})
+            this.setState({incomplete:false})
         }
     }
 
@@ -62,13 +65,14 @@ class StudentSupplyCard extends Component {
         }
     }
 
-    removeReceive = (supply, quantity) => {
+    removeReceive = (supply, incomplete, obs) => {
         if(this.isReceivedSupply(supply)){
             let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
             if(ss) {
-                ss.quantity = parseInt(ss.quantity) - parseInt(quantity);
-            }
-            if(ss.quantity <= 0)
+                ss.incomplete = incomplete;
+                ss.obs = obs;
+            } 
+            if(!ss.incomplete)
                 this.props.student.receivedSupplies = this.props.student.receivedSupplies.filter(ss => ss.id !== supply._id);
         }
         if(!this.isFullyReceivedSupply(supply)){
@@ -86,7 +90,13 @@ class StudentSupplyCard extends Component {
     }
 
     onReceiveClick = (supply) => {
-        this.receiveSupply(supply, this.state.receivedQuantity);
+        this.setState({incomplete:false})
+        this.receiveSupply(supply, false, this.state.obs);
+    }
+
+    onReceiveIncompleteClick = (supply) => {
+        this.setState({incomplete:true})
+        this.receiveSupply(supply, true, this.state.obs);
     }
 
     onReturnClick = (supply) => {
@@ -99,6 +109,26 @@ class StudentSupplyCard extends Component {
         });
     }
 
+    showObs = () => {
+        return this.state.incomplete ?
+            (
+                <div>
+                    <Label for="supply">
+                        Obs.
+                    </Label>
+                    <Input 
+                        type="text"
+                        name="obs"
+                        id="supply"
+                        placeholder="Digite a observação"
+                        className="mb-3"
+                        onChange={this.onChange} 
+                    />
+                    <span>{ this.state.obs }</span>
+                </div>
+            ) : null
+    }
+
     showButton = (supply) => {
         if(!this.props.isAuthenticated || !(this.props.receiving || this.props.returning)){
             return null;
@@ -106,25 +136,13 @@ class StudentSupplyCard extends Component {
         if(this.props.receiving){
             if(this.isFullyReceivedSupply(supply)){
                 return(
-                    <div>
-                        <Label for="supply">
-                            Quantidade Removida
-                        </Label>
-                        <Input 
-                            type="number"
-                            min="0"
-                            name="receivedQuantity"
-                            id="supply"
-                            placeholder="Digite a quantidade removida"
-                            className="mb-3"
-                            onChange={this.onChange} 
-                        />
+                    <div>                        
                         <Button 
                             className="remove-btn"
                             style={{marginLeft: '1rem'}}
                             color="dark"
                             size="sm"
-                            onClick={this.removeReceive.bind(this, supply, this.state.receivedQuantity)}
+                            onClick={this.removeReceive.bind(this, supply, this.state.obs)}
                         >
                             Remover Recebimento
                         </Button>
@@ -135,18 +153,15 @@ class StudentSupplyCard extends Component {
             if(!this.isFullyReceivedSupply(supply)){
                 return(
                     <div>
-                        <Label for="supply">
-                            Quantidade Recebida
-                        </Label>
-                        <Input 
-                            type="number"
-                            min="0"
-                            name="receivedQuantity"
-                            id="supply"
-                            placeholder="Digite a quantidade recebida"
-                            className="mb-3"
-                            onChange={this.onChange} 
-                        />                    
+                        <Button 
+                            className="remove-btn"
+                            style={{marginLeft: '1rem'}}
+                            color="dark"
+                            size="sm"
+                            onClick={this.onReceiveIncompleteClick.bind(this, supply)}
+                        >
+                            Pera
+                        </Button>
                         <Button 
                             className="remove-btn"
                             style={{marginLeft: '1rem'}}
@@ -211,8 +226,9 @@ class StudentSupplyCard extends Component {
             <div>
                 { supply.quantity+" "+supply.name }
                 { this.showButton(supply) }
+                { this.showObs() }
                 <br></br>
-                { this.showStatus() }
+                { this.showStatus() }                
             </div>
         )
     }

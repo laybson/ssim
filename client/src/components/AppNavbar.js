@@ -6,6 +6,7 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
+    NavLink,
     Container
 } from 'reactstrap';
 import { connect } from 'react-redux';
@@ -40,7 +41,10 @@ class AppNavbar extends Component {
                             {  user ? `Olá ${user.name}` : '' }
                         </strong>
                     </span>
-                </NavItem> 
+                </NavItem>
+                <NavLink href="/history">                    
+                        Histórico
+                </NavLink>
                 <NavItem>
                     <Logout />
                 </NavItem>                
