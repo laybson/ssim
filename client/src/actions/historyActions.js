@@ -22,7 +22,7 @@ export const addHistory = (historicalFact) => (dispatch, getState) => {
             payload: res.data
         }))
         .catch(err => {
-            dispatch(returnErrors(err.response.data, err.response.status, 'ADD_GRADE_FAIL'))
+            dispatch(returnErrors(err.response.data, err.response.status, 'ADD_HISTORY_FAIL'))
             dispatch({
                 type: ADD_HISTORY_FAIL
             })

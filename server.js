@@ -9,6 +9,7 @@ const students = require('./routes/api/students');
 const history = require('./routes/api/historicalFacts');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
+const pdf = require('./routes/api/pdf');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/students', students);
 app.use('/api/historicalFacts', history);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+app.use('/api/pdf', pdf);
 
 // Serve static assets if in production
 if(process.env.NODE_ENV === 'production') {

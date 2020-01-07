@@ -5,6 +5,7 @@ import errorReducer from './errorReducer';
 import supplyReducer from './supplyReducer';
 import studentReducer from './studentReducer';
 import historyReducer from './historyReducer';
+import pdfReducer from './pdfReducer';
 
 export default combineReducers({
     grade: gradeReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
     supply: supplyReducer,
     error: errorReducer,
     student: studentReducer,
-    history: historyReducer
+    history: historyReducer,
+    pdf: pdfReducer
 });

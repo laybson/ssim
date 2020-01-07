@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
 import { addStudent } from '../actions/studentActions';
 import { addHistory } from '../actions/historyActions';
+import { createAndDownloadPDF } from "../actions/pdfActions";
 import StudentSuppliesList from './StudentSuppliesList';
 
 class StudentModal extends Component {
@@ -27,6 +28,7 @@ class StudentModal extends Component {
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
         student: PropTypes.object.isRequired,
+        supply: PropTypes.object.isRequired,
         receiving: PropTypes.bool,
         returning: PropTypes.bool,
         clearErrors: PropTypes.func.isRequired
@@ -79,13 +81,33 @@ class StudentModal extends Component {
         }
     }
 
+    pdfData = () => {
+        const student = {
+            name: this.props.student.name,
+            receivedSupplies: this.props.student.receivedSupplies,
+            returnedSupplies: this.props.student.returnedSupplies
+        }
+        const supplies = this.props.supply.supplies
+        const user = {
+            name: this.props.auth.user.name,
+            email: this.props.auth.user.email
+        }
+        return {
+            student: student,
+            supplies: supplies,
+            user: user
+            }
+    }
+
     onSubmit = (e) => {
         e.preventDefault();
 
         const renewStudent = this.props.student
         const historicalFact = this.historicalFact()
+        const pdfData = this.pdfData()
         this.props.addStudent(renewStudent);
         this.props.addHistory(historicalFact);
+        this.props.createAndDownloadPDF(pdfData);
         
         this.toggle();
     }
@@ -219,9 +241,10 @@ class StudentModal extends Component {
 
 const mapStateToProps = (state) => ({
     grade: state.grade,
+    supply: state.supply,
     isAuthenticated: state.auth.isAuthenticated,
     auth: state.auth,
     error: state.error
 });
 
-export default connect(mapStateToProps, { clearErrors, addStudent, addHistory })(StudentModal);
+export default connect(mapStateToProps, { clearErrors, addStudent, addHistory, createAndDownloadPDF })(StudentModal);
