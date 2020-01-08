@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
-import { Container, Row, Col } from 'reactstrap';
+import { Button, Container, Grid, Box, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { deleteGrade, getGradeById } from '../actions/gradeActions'; 
@@ -8,6 +8,31 @@ import SupplyList from '../components/SupplyList';
 import StudentList from '../components/StudentList';
 import AddSupplyModal from '../components/AddSupplyModal';
 import AddStudentModal from '../components/AddStudentModal';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    titleGrade: {
+        color: 'rgba(207, 31, 37, 1)',
+        textAlign: 'center',
+    },
+    subtitleGrade: {
+        color: 'rgba(207, 31, 37, .5)',
+        textAlign: 'center',
+    },
+    delete: {
+        padding: theme.spacing(2),
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+});
 
 class GradePage extends Component {
     state = {
@@ -32,45 +57,53 @@ class GradePage extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         const grade = this.props.grade.grade;        
                 
         return (      
-            <Container>
-                <Row>
-                    <Col>
-                        {grade.name+" "+grade.shift}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs="6">
-                        Materiais
-                        <AddSupplyModal />
+            <Container className={classes.root}>
+                <Box justify="center">
+                    <Typography className={classes.titleGrade} variant='h5'>
+                        { grade.name }
+                    </Typography>
+                    <Typography className={classes.subtitleGrade}>
+                        { grade.shift }
+                    </Typography>
+                </Box>
+                <Grid container spacing={3} justify="center">
+                    <Grid item xs={12} sm={6}>
+                        <Box className={classes.root}>
+                            <Typography className={classes.titleGrade} variant='h6'>
+                                Materiais
+                            </Typography>                            
+                            <AddSupplyModal />
+                        </Box>
                         <SupplyList 
                             grade={ {id:this.props.match.params.id} }/>
-                    </Col>
-                    <Col xs="6">
-                        Estudantes
-                        <AddStudentModal />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Box className={classes.root}>
+                            <Typography className={classes.titleGrade} variant='h6'>
+                                Estudantes
+                            </Typography>
+                            <AddStudentModal />
+                        </Box>
                         <StudentList 
                             grade={ {id:this.props.match.params.id} }/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        { this.props.isAuthenticated ?
-                            <Button 
-                                className="remove-btn"
-                                style={{marginLeft: '1rem'}}
-                                color="danger"
-                                size="sm"
-                                onClick={this.onDeleteClick.bind(this, grade._id)}
-                            >
-                                Apagar Turma
-                            </Button> :
-                            null
-                        }
-                    </Col>
-                </Row>
+                    </Grid>
+                </Grid>
+                <Box justify="center" className={classes.delete}>
+                    { this.props.isAuthenticated ?
+                        <Button
+                            color="secondary"
+                            variant="contained"
+                            onClick={this.onDeleteClick.bind(this, grade._id)}
+                        >
+                            Apagar Turma
+                        </Button> :
+                        null
+                    }
+                </Box>
             </Container>            
         );
     }
@@ -84,4 +117,4 @@ const mapStateToProps = (state) => ({
 export default connect(
     mapStateToProps, 
     { deleteGrade, getGradeById }
-)(GradePage);
+)(withStyles(styles)(GradePage));

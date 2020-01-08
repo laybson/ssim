@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-    Button,
     Modal,
     ModalHeader,
     ModalBody,
@@ -9,10 +8,34 @@ import {
     Label,
     Input
 } from 'reactstrap';
+import { Button, Box } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { addStudent } from '../actions/studentActions';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    buttons: {
+        flexGrow: 1,
+        display: 'flex',
+        color: 'rgba(0, 0, 0, 1)'
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+    delete: {
+        marginLeft: "auto",
+        marginRight: -12,        
+    },
+});
 
 class AddStudentModal extends Component {
     state = {
@@ -58,7 +81,7 @@ class AddStudentModal extends Component {
     onSubmit = (e) => {
         e.preventDefault();
 
-        this.grade = this.props.grade.grades._id
+        this.grade = this.props.grade.grade._id
 
         const newStudent = {
             name: this.state.name,
@@ -73,16 +96,19 @@ class AddStudentModal extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return(
-            <div>
-                { this.props.isAuthenticated ? 
+            <Box>
+                { this.props.isAuthenticated ?
                     <Button
-                        color="dark"
-                        style={{marginBottom: '2rem'}}
+                        className={ classes.buttons }
+                        fullWidth={true}
+                        variant="outlined"
                         onClick={this.toggle}
                     >
                         Adicionar Estudante
-                    </Button> :
+                    </Button> 
+                    :
                     null
                 }
                 
@@ -108,9 +134,10 @@ class AddStudentModal extends Component {
                                     onChange={this.onChange} 
                                 />
                                 <Button
-                                    color="dark"
-                                    style={{marginTop: '2rem'}}
-                                    block
+                                    className={ classes.buttons }
+                                    fullWidth={true}
+                                    variant="outlined"
+                                    onClick={this.onSubmit}
                                 >
                                     Adicionar Estudante
                                 </Button>
@@ -118,7 +145,7 @@ class AddStudentModal extends Component {
                         </Form>
                     </ModalBody>
                 </Modal>
-            </div>
+            </Box>
         );
     }
 }
@@ -129,4 +156,4 @@ const mapStateToProps = (state) => ({
     error: state.error
 });
 
-export default connect(mapStateToProps, { addStudent, clearErrors })(AddStudentModal);
+export default connect(mapStateToProps, { addStudent, clearErrors })(withStyles(styles)(AddStudentModal));

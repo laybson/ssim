@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-    Button,
     Container,
     Modal,
     ModalHeader,
@@ -8,6 +7,8 @@ import {
     Form,
     FormGroup
 } from 'reactstrap';
+import { Button, Box } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
@@ -15,6 +16,28 @@ import { addStudent } from '../actions/studentActions';
 import { addHistory } from '../actions/historyActions';
 import { createAndDownloadPDF } from "../actions/pdfActions";
 import StudentSuppliesList from './StudentSuppliesList';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    buttons: {
+        flexGrow: 1,
+        display: 'flex',
+        color: 'rgba(0, 0, 0, 1)'
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+    delete: {
+        marginLeft: "auto",
+        marginRight: -12,        
+    },
+});
 
 class StudentModal extends Component {
     state = {
@@ -112,23 +135,27 @@ class StudentModal extends Component {
         this.toggle();
     }
 
-    showButton = () => {
+    showButton = (classes) => {
         if(!this.props.isAuthenticated || !(this.props.receiving || this.props.returning)){
             return null;
         }
         if(this.props.receiving){
             return(
                 <Button
-                    color="dark"
+                    className={ classes.buttons }
+                    fullWidth={true}
+                    variant="outlined"
                     onClick={this.toggle}
                 >
                     Recebimento de Materiais
-                </Button>
+                </Button>                
             )
         } else if(this.props.returning){
             return(
                 <Button
-                    color="dark"
+                    className={ classes.buttons }
+                    fullWidth={true}
+                    variant="outlined"
                     onClick={this.toggle}
                 >
                     Devolução de Materiais
@@ -184,16 +211,17 @@ class StudentModal extends Component {
         )
     }
 
-    showSubmit = () => {
+    showSubmit = (classes) => {
         if(!this.props.isAuthenticated || !(this.props.receiving || this.props.returning)){
             return null;
         }
         if(this.props.receiving){
             return(
                 <Button
-                    color="dark"
-                    style={{marginTop: '2rem'}}
-                    block
+                    className={ classes.buttons }
+                    fullWidth={true}
+                    variant="outlined"
+                    onClick={this.onSubmit}
                 >
                     Recebimento Concluído / Imprimir
                 </Button>
@@ -201,9 +229,10 @@ class StudentModal extends Component {
         } else if(this.props.returning){
             return(
                 <Button
-                    color="dark"
-                    style={{marginTop: '2rem'}}
-                    block
+                    className={ classes.buttons }
+                    fullWidth={true}
+                    variant="outlined"
+                    onClick={this.onSubmit}
                 >
                     Devolução Concluída / Imprimir
                 </Button>
@@ -212,9 +241,10 @@ class StudentModal extends Component {
     }    
 
     render() {
+        const { classes } = this.props;
         return(
-            <div>
-                {this.showButton()}
+            <Box>
+                {this.showButton(classes)}
                 
                 <Modal
                     isOpen={this.state.modal}
@@ -228,13 +258,13 @@ class StudentModal extends Component {
                             <Form onSubmit={this.onSubmit}>
                                 {this.showList()}
                                 <FormGroup>
-                                    {this.showSubmit()}
+                                    {this.showSubmit(classes)}
                                 </FormGroup>
                             </Form>
                         </Container>
                     </ModalBody>
                 </Modal>
-            </div>
+            </Box>
         );
     }
 }
@@ -247,4 +277,4 @@ const mapStateToProps = (state) => ({
     error: state.error
 });
 
-export default connect(mapStateToProps, { clearErrors, addStudent, addHistory, createAndDownloadPDF })(StudentModal);
+export default connect(mapStateToProps, { clearErrors, addStudent, addHistory, createAndDownloadPDF })(withStyles(styles)(StudentModal));

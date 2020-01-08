@@ -1,9 +1,36 @@
 import React, { Component } from 'react';
-import { Button, Container } from 'reactstrap';
+import { Grid, Box, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { deleteStudent } from '../actions/studentActions';
 import StudentModal from './StudentModal';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    buttons: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+        '& > *': {
+            margin: theme.spacing(.3),
+        },
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+    delete: {
+        marginLeft: "auto",
+        marginRight: -12,        
+    },
+});
 
 class StudentCard extends Component {
     static propTypes = {
@@ -16,28 +43,33 @@ class StudentCard extends Component {
 
     render() {
         const student = this.props.student;
+        const { classes } = this.props;
 
         return(
             <div>
-                { student.name }
+                <Box className={ classes.root }>
+                    { student.name }
+                    <IconButton
+                        className={ classes.delete }
+                        color="secondary" 
+                        aria-label="delete"
+                        onClick={this.onDeleteClick.bind(this, student._id)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </Box>
                 { this.props.isAuthenticated ?
-                    <Container>
-                        <StudentModal 
-                            student={ student }
-                            receiving= { true }/>
-                        <StudentModal 
-                            student={ student }
-                            returning= { true }/>
-                        <Button 
-                            className="remove-btn"
-                            style={{marginLeft: '1rem'}}
-                            color="danger"
-                            size="sm"
-                            onClick={this.onDeleteClick.bind(this, student._id)}
-                        >
-                            &times;
-                        </Button> 
-                    </Container> :
+                    <Grid container spacing={1} className={ classes.root } justify="center">
+                        <Grid item xs={12} sm={6}>
+                            <StudentModal 
+                                student={ student }
+                                receiving= { true }/>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <StudentModal 
+                                student={ student }
+                                returning= { true }/>
+                        </Grid>
+                    </Grid> :
                     null
                 }
             </div>
@@ -52,4 +84,4 @@ const mapStateToProps = (state) => ({
 export default connect(
     mapStateToProps, 
     { deleteStudent }
-)(StudentCard);
+)(withStyles(styles)(StudentCard));

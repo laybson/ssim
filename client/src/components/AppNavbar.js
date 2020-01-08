@@ -9,11 +9,35 @@ import {
     NavLink,
     Container
 } from 'reactstrap';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import RegisterModal from './auth/RegisterModal';
 import LoginModal from './auth/LoginModal';
 import Logout from './auth/Logout';
+
+const styles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    title: {
+      flexGrow: 1,
+    },
+    nav: {
+        backgroundColor: 'rgba(207, 31, 37, 1)'
+    },
+    rightSection: {
+        color: 'white',
+        display: 'flex',
+        
+    },
+    icon: {
+        color: 'white',
+    },
+});
 
 class AppNavbar extends Component {
     state = {
@@ -31,6 +55,7 @@ class AppNavbar extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         const { isAuthenticated, user } = this.props.auth;
 
         const authLinks = (
@@ -64,8 +89,8 @@ class AppNavbar extends Component {
 
         return (
             <div>
-                <Navbar color="dark" dark expand="sm" className="mb-5">
-                    <Container>
+                <Navbar style={{backgroundColor: 'rgba(187, 21, 27, 1)'}} dark expand="sm" className="mb-4">
+                    <Container className={classes.rightSection}>
                         <NavbarBrand href="/">
                             ssim
                         </NavbarBrand>
@@ -86,4 +111,4 @@ const mapStateToProps = state => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, null)(AppNavbar);
+export default connect(mapStateToProps, null)(withStyles(styles)(AppNavbar));

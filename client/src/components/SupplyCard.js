@@ -1,8 +1,27 @@
 import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import { Box, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { deleteSupply } from '../actions/supplyActions';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+    delete: {
+        marginLeft: "auto",
+        marginRight: -12,        
+    },
+});
 
 class SupplyCard extends Component {
     static propTypes = {
@@ -15,23 +34,22 @@ class SupplyCard extends Component {
 
     render() {
         const supply = this.props.supply;
+        const { classes } = this.props;
 
         return(
-            <div>
+            <Box className={ classes.root }>
                 { supply.quantity+" "+supply.name }
                 { this.props.isAuthenticated ?
-                    <Button 
-                        className="remove-btn"
-                        style={{marginLeft: '1rem'}}
-                        color="danger"
-                        size="sm"
-                        onClick={this.onDeleteClick.bind(this, supply._id)}
-                    >
-                        &times;
-                    </Button> :
+                    <IconButton
+                        className={ classes.delete }
+                        color="secondary" 
+                        aria-label="delete"
+                        onClick={this.onDeleteClick.bind(this, supply._id)}>
+                        <DeleteIcon />
+                    </IconButton> :
                     null
                 }
-            </div>
+            </Box>
         )
     }
 }
@@ -43,4 +61,4 @@ const mapStateToProps = (state) => ({
 export default connect(
     mapStateToProps, 
     { deleteSupply }
-)(SupplyCard);
+)(withStyles(styles)(SupplyCard));

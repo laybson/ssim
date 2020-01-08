@@ -9,6 +9,7 @@ const HistoricalFact = require("../../models/HistoricalFact");
 // @access  Public
 router.get('/', (req, res) => {
     HistoricalFact.find()
+        .sort({'register_date': 'desc'})
         .then(historicalFacts => res.json(historicalFacts))
 });
 
