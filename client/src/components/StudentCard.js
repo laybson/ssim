@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Grid, Box, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { deleteStudent } from '../actions/studentActions';
+import { getStudentReport } from '../actions/report';
 import StudentModal from './StudentModal';
 
 const styles = theme => ({
@@ -21,6 +23,12 @@ const styles = theme => ({
             margin: theme.spacing(.3),
         },
     },
+    reportFalse: {
+        color: 'rgba(207, 31, 37, 1)'
+    },
+    reportTrue: {
+        color: 'rgba(31, 207, 37, 1)'
+    },
     paper: {
         padding: theme.spacing(2),
         textAlign: 'center',
@@ -34,11 +42,19 @@ const styles = theme => ({
 
 class StudentCard extends Component {
     static propTypes = {
-        isAuthenticated: PropTypes.bool
+        isAuthenticated: PropTypes.bool,
+        supply: PropTypes.object
     }
 
     onDeleteClick = (id) => {
         this.props.deleteStudent(id);
+    }
+
+    report = (classes) => {
+        if(getStudentReport(this.props.supply.supplies, this.props.student)){
+            return classes.reportTrue;
+        }
+        return classes.reportFalse;
     }
 
     render() {
@@ -46,8 +62,11 @@ class StudentCard extends Component {
         const { classes } = this.props;
 
         return(
-            <div>
+            <Box>
                 <Box className={ classes.root }>
+                    <StopIcon 
+                        className={ this.report(classes) }
+                        aria-label="report" />
                     { student.name }
                     { this.props.isAuthenticated ?
                         <IconButton
@@ -75,13 +94,14 @@ class StudentCard extends Component {
                     </Grid> :
                     null
                 }
-            </div>
+            </Box>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    supply: state.supply
 })
 
 export default connect(

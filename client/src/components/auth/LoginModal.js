@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-    Button,
     Modal,
     ModalHeader,
     ModalBody,
@@ -11,10 +10,34 @@ import {
     NavLink,
     Alert
 } from 'reactstrap';
+import { Button, Box } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/authActions';
 import { clearErrors } from '../../actions/errorActions';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    buttons: {
+        flexGrow: 1,
+        display: 'flex',
+        color: 'rgba(0, 0, 0, 1)'
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+    delete: {
+        marginLeft: "auto",
+        marginRight: -12,        
+    },
+});
 
 class LoginModal extends Component {
     state = {
@@ -79,8 +102,10 @@ class LoginModal extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return(
-            <div>
+            <Box>
                 <NavLink onClick={this.toggle} href="#">
                     Entrar
                 </NavLink>
@@ -120,17 +145,18 @@ class LoginModal extends Component {
                                     onChange={this.onChange} 
                                 />
                                 <Button
-                                    color="dark"
-                                    style={{marginTop: '2rem'}}
-                                    block
+                                    className={ classes.buttons }
+                                    fullWidth={true}
+                                    variant="outlined"
+                                    onClick={this.onSubmit}
                                 >
                                     Entrar
-                                </Button>
+                                </Button>                                
                             </FormGroup>
                         </Form>
                     </ModalBody>
                 </Modal>
-            </div>
+            </Box>
         );
     }
 }
@@ -140,4 +166,4 @@ const mapStateToProps = (state) => ({
     error: state.error
 });
 
-export default connect(mapStateToProps, { login, clearErrors })(LoginModal);
+export default connect(mapStateToProps, { login, clearErrors })(withStyles(styles)(LoginModal));
