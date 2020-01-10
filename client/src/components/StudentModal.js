@@ -130,7 +130,7 @@ class StudentModal extends Component {
         const pdfData = this.pdfData()
         this.props.addStudent(renewStudent);
         this.props.addHistory(historicalFact);
-        this.props.createAndDownloadPDF(pdfData);
+        this.props.createAndDownloadPDF(pdfData,this.props.student.name);
         
         this.toggle();
     }

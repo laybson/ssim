@@ -49,13 +49,16 @@ class StudentCard extends Component {
             <div>
                 <Box className={ classes.root }>
                     { student.name }
-                    <IconButton
-                        className={ classes.delete }
-                        color="secondary" 
-                        aria-label="delete"
-                        onClick={this.onDeleteClick.bind(this, student._id)}>
-                        <DeleteIcon />
-                    </IconButton>
+                    { this.props.isAuthenticated ?
+                        <IconButton
+                            className={ classes.delete }
+                            color="secondary" 
+                            aria-label="delete"
+                            onClick={this.onDeleteClick.bind(this, student._id)}>
+                            <DeleteIcon />
+                        </IconButton> :
+                        null
+                    }
                 </Box>
                 { this.props.isAuthenticated ?
                     <Grid container spacing={1} className={ classes.root } justify="center">

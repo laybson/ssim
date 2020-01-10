@@ -1,8 +1,56 @@
 import React, { Component } from 'react';
-import { Button, Label, Input } from 'reactstrap';
+import {    
+    Box,
+    Grid,
+    Input,
+    Slider,
+    Switch,
+    InputLabel, 
+    Typography,
+    FormControlLabel } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addStudent } from '../actions/studentActions';
+
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
+    },
+    slider: {
+        marginTop: 6,
+    }
+});
+
+const PrettoSlider = withStyles({
+    root: {
+        height: 8,
+    },
+    thumb: {
+        height: 20,
+        width: 20,
+        border: '2px solid currentColor',
+        marginTop: -6,
+        marginLeft: -12,
+        '&:focus,&:hover,&$active': {
+            boxShadow: 'inherit',
+        },
+    },
+    active: {},
+    valueLabel: {
+         left: 'calc(-50% + 4px)',
+    },
+    track: {
+        height: 8,
+        borderRadius: 4,
+    },
+    rail: {        
+        height: 8,
+        borderRadius: 4,
+    },
+  })(Slider);
 
 class StudentSupplyCard extends Component {
     state = {
@@ -25,6 +73,21 @@ class StudentSupplyCard extends Component {
         this.setState({isReceived:this.isFullyReceivedSupply(this.props.supply)})
         this.setState({isReturned:this.isReturnedSupply(this.props.supply)})
         this.setState({incomplete:this.isReceivedSupply(this.props.supply)&&!this.isFullyReceivedSupply(this.props.supply)})
+        this.setState({obs:this.getObs(this.props.supply)})
+    }
+
+    getObs = (supply) => {
+        if(this.isReceivedSupply(supply)){
+            return this.props.student.receivedSupplies.find(ss => ss.id === supply._id).obs;
+        }
+        return '';
+    }
+
+    setObs = (supply, obs) => {
+        let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
+        if(ss) {
+            ss.obs = obs;
+        }
     }
 
     isReceivedSupply = (supply) => {
@@ -40,172 +103,145 @@ class StudentSupplyCard extends Component {
         return this.props.student.returnedSupplies.some(ss => ss.id === supply._id)
     }
 
-    receiveSupply = (supply, incomplete, obs) => {
-        if(!this.isReceivedSupply(supply)){
-            this.props.student.receivedSupplies = [{id: supply._id, incomplete: incomplete, obs: obs}, ...this.props.student.receivedSupplies]
-        } else if (!this.isFullyReceivedSupply(supply)){
-            let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
-            if(ss) {
-                ss.incomplete = incomplete;
-                ss.obs = obs;
-            }                
-        }
-        if(this.isFullyReceivedSupply(supply)){
-            this.setState({isReceived:true})
-            this.setState({incomplete:false})
+    receiveSupply = (supply, v, obs) => {
+        if(v === 0){
+            this.props.student.receivedSupplies = this.props.student.receivedSupplies.filter(ss => ss.id !== supply._id);
+        }else{
+            let incomplete = false;
+            if(v === 1){
+                incomplete = true;
+            }else if(v === 2){
+                incomplete = false;
+            }
+            if(!this.isReceivedSupply(supply)){
+                this.props.student.receivedSupplies = [{id: supply._id, incomplete: incomplete, obs: this.state.obs}, ...this.props.student.receivedSupplies]
+            } else {
+                let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
+                if(ss) {
+                    ss.incomplete = incomplete;
+                    ss.obs = obs;
+                }                
+            }
         }
     }
 
     returnSupply = (supply) => {
-        if(!this.isReturnedSupply(supply)){
-            this.props.student.returnedSupplies = [{id: supply._id}, ...this.props.student.returnedSupplies]
+        if(!this.state.isReturned){
+            this.props.student.returnedSupplies = [{id: supply._id}, ...this.props.student.returnedSupplies];
         }
-        if(this.isReturnedSupply(supply)){
-            this.setState({isReturned:true})
-        }
-    }
-
-    removeReceive = (supply, incomplete, obs) => {
-        if(this.isReceivedSupply(supply)){
-            let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
-            if(ss) {
-                ss.incomplete = incomplete;
-                ss.obs = obs;
-            } 
-            if(!ss.incomplete)
-                this.props.student.receivedSupplies = this.props.student.receivedSupplies.filter(ss => ss.id !== supply._id);
-        }
-        if(!this.isFullyReceivedSupply(supply)){
-            this.setState({isReceived:false})
-        }
-    }
-
-    removeReturn = (supply) => {
-        if(this.isReturnedSupply(supply)){
+        if(this.state.isReturned){
             this.props.student.returnedSupplies = this.props.student.returnedSupplies.filter(ss => ss.id !== supply._id);
         }
-        if(!this.isReturnedSupply(supply)){
-            this.setState({isReturned:false})
+    }
+
+    onReceiveClick = (supply, e, v) => {
+        this.mapValueToReceiveState(v);
+        this.receiveSupply(supply, v, this.state.obs);        
+    }
+
+    mapValueToReceiveState = (value) => {
+        if(value === 0){
+            this.setState({isReceived:false});
+            this.setState({incomplete:false});
+        }else if(value === 1){
+            this.setState({isReceived:false});
+            this.setState({incomplete:true});
+        }else if(value === 2){
+            this.setState({isReceived:true});
+            this.setState({incomplete:false});
+        }            
+    }
+
+    mapReceiveStateToValue = () => {
+        if(!this.state.isReceived){
+            if(this.state.incomplete){
+                return 1;
+            }
+            return 0;
         }
-    }
-
-    onReceiveClick = (supply) => {
-        this.setState({incomplete:false})
-        this.receiveSupply(supply, false, this.state.obs);
-    }
-
-    onReceiveIncompleteClick = (supply) => {
-        this.setState({incomplete:true})
-        this.receiveSupply(supply, true, this.state.obs);
+        return 2;
     }
 
     onReturnClick = (supply) => {
+        this.setState({isReturned:!this.state.isReturned});
         this.returnSupply(supply);
     }
 
-    onChange = (e) => {        
+    onChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         });
+        this.setObs(this.props.supply, e.target.value);
     }
 
-    showObs = () => {
+    showObs = () => {        
         return this.state.incomplete ?
             (
-                <div>
-                    <Label for="supply">
-                        Obs.
-                    </Label>
-                    <Input 
-                        type="text"
+                <Box>
+                    <InputLabel htmlFor="obs">Obs.:</InputLabel>
+                    <Input
+                        value={ this.state.obs }
                         name="obs"
-                        id="supply"
+                        id="obs"
                         placeholder="Digite a observação"
                         className="mb-3"
+                        fullWidth={true}
                         onChange={this.onChange} 
                     />
-                    <span>{ this.state.obs }</span>
-                </div>
+                </Box>
             ) : null
     }
 
-    showButton = (supply) => {
+    showButton = (supply, classes) => {
         if(!this.props.isAuthenticated || !(this.props.receiving || this.props.returning)){
             return null;
         }
         if(this.props.receiving){
-            if(this.isFullyReceivedSupply(supply)){
-                return(
-                    <div>                        
-                        <Button 
-                            className="remove-btn"
-                            style={{marginLeft: '1rem'}}
-                            color="dark"
-                            size="sm"
-                            onClick={this.removeReceive.bind(this, supply, this.state.obs)}
-                        >
-                            Remover Recebimento
-                        </Button>
-                    </div>
-                    
-                )
-            }
-            if(!this.isFullyReceivedSupply(supply)){
-                return(
-                    <div>
-                        <Button 
-                            className="remove-btn"
-                            style={{marginLeft: '1rem'}}
-                            color="dark"
-                            size="sm"
-                            onClick={this.onReceiveIncompleteClick.bind(this, supply)}
-                        >
-                            Pera
-                        </Button>
-                        <Button 
-                            className="remove-btn"
-                            style={{marginLeft: '1rem'}}
-                            color="dark"
-                            size="sm"
-                            onClick={this.onReceiveClick.bind(this, supply)}
-                        >
-                            Receber
-                        </Button>
-                    </div>
-                )
-            }            
+            const defaultValue = this.mapReceiveStateToValue();
+            return(
+                <Grid container spacing={2} className={ classes.root } justify="center">
+                    <Grid item xs={12} sm={2} className={ classes.slider }>
+                        <PrettoSlider
+                            defaultValue={defaultValue}
+                            value={this.mapReceiveStateToValue()}
+                            aria-labelledby="discrete-slider"
+                            valueLabelDisplay="off"
+                            onChange={this.onReceiveClick.bind(this, supply)}
+                            step={1}
+                            marks
+                            min={0}
+                            max={2}
+                        />                        
+                    </Grid>
+                    <Grid item xs={12} sm={10}>
+                        <Typography>
+                            O material foi recebido?
+                        </Typography>
+                    </Grid>
+                </Grid>
+            )
+            
         } else if(this.props.returning){
             if(!this.isFullyReceivedSupply(supply)){
                 return(
-                    <div>Material não recebido</div>
+                    <Box>Material não recebido</Box>
                 )
             }
-            if(this.isReturnedSupply(supply)){
-                return(
-                    <Button 
-                        className="remove-btn"
-                        style={{marginLeft: '1rem'}}
-                        color="dark"
-                        size="sm"
-                        onClick={this.removeReturn.bind(this, supply)}
-                    >
-                        Desfazer Devolução
-                    </Button>
-                )
-            }
-            if(!this.isReturnedSupply(supply)){
-                return(
-                    <Button 
-                        className="remove-btn"
-                        style={{marginLeft: '1rem'}}
-                        color="dark"
-                        size="sm"
-                        onClick={this.onReturnClick.bind(this, supply)}
-                    >
-                        Devolver
-                    </Button>
-                )
-            }            
+            return (
+                <FormControlLabel
+                    className="mb-3"
+                    control={
+                    <Switch
+                        name="isReturned"
+                        checked={this.state.isReturned}
+                        onChange={this.onReturnClick.bind(this, supply)}
+                        value="isReturned"
+                        color="primary"                                        
+                    />
+                    }
+                    label="O Material foi devolvido?"
+                />
+            )          
         }
         return null
     }
@@ -221,15 +257,16 @@ class StudentSupplyCard extends Component {
 
     render() {
         const supply = this.props.supply;
+        const { classes } = this.props;
 
         return(
-            <div>
+            <Box>
                 { supply.quantity+" "+supply.name }
-                { this.showButton(supply) }
+                { this.showButton(supply, classes) }
                 { this.showObs() }
                 <br></br>
                 { this.showStatus() }                
-            </div>
+            </Box>
         )
     }
 }
@@ -243,4 +280,4 @@ const mapStateToProps = (state) => ({
 export default connect(
     mapStateToProps, 
     { addStudent }
-)(StudentSupplyCard);
+)(withStyles(styles)(StudentSupplyCard));
