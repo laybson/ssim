@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Role } from './auth/Roles';
 import {    
     Box,
     Grid,
@@ -6,8 +7,9 @@ import {
     Slider,
     Switch,
     InputLabel, 
-    Typography,
+    Tooltip,
     FormControlLabel } from '@material-ui/core';
+import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -19,10 +21,42 @@ const styles = theme => ({
         display: 'flex',
         alignItems: 'center',
     },
+    obs: {
+        color: 'rgba(0, 0, 0, .5)',
+    },
     slider: {
         marginTop: 6,
-    }
+    },
+    switch: {
+        marginTop: 9,
+    },
+    reportFalse: {
+        color: 'rgba(207, 31, 37, 1)'
+    },
+    reportPending: {
+        color: 'rgba(217, 207, 17, 1)',
+    },
+    reportTrue: {
+        color: 'rgba(31, 207, 37, 1)',
+    },
 });
+
+const LightSwitch = withStyles({
+    switchBase: {
+        color: 'rgba(207, 31, 37, 1)',
+        '&$checked': {
+            color: 'rgba(31, 207, 37, 1)',
+        },
+        '& + $track': {
+            backgroundColor: 'rgba(207, 31, 37, 1)',
+        },
+        '&$checked + $track': {
+            backgroundColor: 'rgba(31, 207, 37, 1)',
+        },
+    },
+    checked: {},
+    track: {},
+  })(Switch);
 
 const PrettoSlider = withStyles({
     root: {
@@ -43,12 +77,14 @@ const PrettoSlider = withStyles({
          left: 'calc(-50% + 4px)',
     },
     track: {
-        height: 8,
-        borderRadius: 4,
+        marginTop: -3,
+        height: 14,
+        borderRadius: 8,
     },
-    rail: {        
-        height: 8,
-        borderRadius: 4,
+    rail: {
+        marginTop: -3,      
+        height: 14,
+        borderRadius: 8,
     },
   })(Slider);
 
@@ -61,6 +97,7 @@ class StudentSupplyCard extends Component {
     }
 
     static propTypes = {
+        user: PropTypes.object,
         student: PropTypes.object.isRequired,
         receiving: PropTypes.bool,
         returning: PropTypes.bool,
@@ -114,7 +151,7 @@ class StudentSupplyCard extends Component {
                 incomplete = false;
             }
             if(!this.isReceivedSupply(supply)){
-                this.props.student.receivedSupplies = [{id: supply._id, incomplete: incomplete, obs: this.state.obs}, ...this.props.student.receivedSupplies]
+                this.props.student.receivedSupplies = [{id: supply._id, incomplete: incomplete, didactic: supply.didactic, obs: this.state.obs}, ...this.props.student.receivedSupplies]
             } else {
                 let ss = this.props.student.receivedSupplies.find(s=>s.id === supply._id);
                 if(ss) {
@@ -171,25 +208,37 @@ class StudentSupplyCard extends Component {
         this.setState({
             [e.target.name]: e.target.value
         });
-        this.setObs(this.props.supply, e.target.value);
     }
 
-    showObs = () => {        
-        return this.state.incomplete ?
+    showObs = (classes) => {        
+        return this.state.incomplete && this.props.receiving ?
             (
-                <Box>
-                    <InputLabel htmlFor="obs">Obs.:</InputLabel>
-                    <Input
-                        value={ this.state.obs }
-                        name="obs"
-                        id="obs"
-                        placeholder="Digite a observação"
-                        className="mb-3"
-                        fullWidth={true}
-                        onChange={this.onChange} 
-                    />
-                </Box>
+                this.props.user.role === Role.Admin || this.props.user.role === Role.User ?
+                    <Box>
+                        <InputLabel htmlFor="obs">Obs.:</InputLabel>
+                        <Input
+                            value={ this.state.obs }
+                            name="obs"
+                            id="obs"
+                            placeholder="Digite a observação"
+                            className="mb-3"
+                            fullWidth={true}
+                            onChange={this.onChange} 
+                        />
+                    </Box> : 
+                    <Box className={ classes.obs }>
+                        Obs.: { this.state.obs }
+                    </Box>
             ) : null
+    }
+
+    report = (classes, value) => {
+        if(value === 2){
+            return classes.reportTrue;
+        }else if(value === 1) {
+            return classes.reportPending;
+        }
+        return classes.reportFalse;
     }
 
     showButton = (supply, classes) => {
@@ -198,57 +247,54 @@ class StudentSupplyCard extends Component {
         }
         if(this.props.receiving){
             const defaultValue = this.mapReceiveStateToValue();
-            return(
-                <Grid container spacing={2} className={ classes.root } justify="center">
-                    <Grid item xs={12} sm={2} className={ classes.slider }>
-                        <PrettoSlider
-                            defaultValue={defaultValue}
-                            value={this.mapReceiveStateToValue()}
-                            aria-labelledby="discrete-slider"
-                            valueLabelDisplay="off"
-                            onChange={this.onReceiveClick.bind(this, supply)}
-                            step={1}
-                            marks
-                            min={0}
-                            max={2}
-                        />                        
-                    </Grid>
-                    <Grid item xs={12} sm={10}>
-                        <Typography>
-                            O material foi recebido?
-                        </Typography>
-                    </Grid>
-                </Grid>
-            )
+            return this.props.user.role === Role.Admin || this.props.user.role === Role.User ? (                
+                <PrettoSlider
+                    className={this.report(classes,this.mapReceiveStateToValue())}
+                    defaultValue={defaultValue}
+                    value={this.mapReceiveStateToValue()}
+                    aria-labelledby="discrete-slider"
+                    valueLabelDisplay="off"
+                    onChange={this.onReceiveClick.bind(this, supply)}
+                    step={1}
+                    marks
+                    min={0}
+                    max={2}
+                />                
+            ) : <StopIcon 
+                    className={ this.report(classes,this.mapReceiveStateToValue()) }
+                    aria-label="report" />;
             
         } else if(this.props.returning){
             if(!this.isFullyReceivedSupply(supply)){
                 return(
-                    <Box>Material não recebido</Box>
+                    <StopIcon 
+                        className={ this.report(classes,this.mapReceiveStateToValue()) }
+                        aria-label="report" />
                 )
             }
-            return (
+            return this.props.user.role === Role.Admin || this.props.user.role === Role.User ? (
                 <FormControlLabel
                     className="mb-3"
                     control={
-                    <Switch
+                    <LightSwitch
                         name="isReturned"
                         checked={this.state.isReturned}
                         onChange={this.onReturnClick.bind(this, supply)}
                         value="isReturned"
-                        color="primary"                                        
+                        className={ classes.switch }                                        
                     />
                     }
-                    label="O Material foi devolvido?"
                 />
-            )          
+            ) : <StopIcon 
+                    className={ this.report(classes,this.mapReceiveStateToValue()) }
+                    aria-label="report" />;
         }
         return null
-    }
+    }    
 
     showStatus = () => {
         if(this.props.receiving) {
-            return this.state.isReceived ? (<span>Recebido</span>) : (<span>Não Recebido</span>)
+            return this.state.isReceived ? (<span>Recebido</span>) : (this.state.incomplete ? <span>Pendente</span> : <span>Não Recebido</span>)
         } else if(this.props.returning) {
             return this.state.isReturned ? (<span>Devolvido</span>) : (<span>Não Devolvido</span>)
         }
@@ -261,17 +307,24 @@ class StudentSupplyCard extends Component {
 
         return(
             <Box>
-                { supply.quantity+" "+supply.name }
-                { this.showButton(supply, classes) }
-                { this.showObs() }
-                <br></br>
-                { this.showStatus() }                
+                <Tooltip title={this.showStatus()} placement="right">
+                    <Grid container spacing={2} className={ classes.root } justify="center">
+                        <Grid item xs={12} sm={2} className={ classes.slider }>
+                            { this.showButton(supply, classes) }                     
+                        </Grid>
+                        <Grid item xs={12} sm={10}>
+                            { supply.quantity+" "+supply.name }
+                        </Grid>
+                    </Grid>
+                </Tooltip>
+                { this.showObs(classes) }
             </Box>
         )
     }
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     grade: state.grade,
     students: state.student,
     isAuthenticated: state.auth.isAuthenticated

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Role } from './auth/Roles';
 import {
     Container,
     Modal,
@@ -48,6 +49,7 @@ class StudentModal extends Component {
     }
 
     static propTypes = {
+        user: PropTypes.object,
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
         student: PropTypes.object.isRequired,
@@ -182,32 +184,29 @@ class StudentModal extends Component {
     showList = () => {
         if(this.props.receiving){
             return(
-                <div>
-                    <span> Lista de Recebimento </span>
+                <Box>
                     <StudentSuppliesList 
                         grade={ {id:this.props.grade._id} }
                         student={ this.props.student } 
                         receiving={ true }/>
-                </div>                
+                </Box>                
             )
         } else if(this.props.returning){
             return(
-                <div>
-                    <span> Lista de Devolução </span>
+                <Box>
                     <StudentSuppliesList 
                         grade={ {id:this.props.grade._id} }
                         student={ this.props.student } 
                         returning={ true }/>
-                </div>
+                </Box>
             )
         }
         return (
-            <div>
-                <span> Apenas Lista </span>
+            <Box>
                 <StudentSuppliesList 
-                        grade={ {id:this.props.grade._id} }
-                        student={ this.props.student } />
-            </div>
+                    grade={ {id:this.props.grade._id} }
+                    student={ this.props.student } />
+            </Box>
         )
     }
 
@@ -257,9 +256,10 @@ class StudentModal extends Component {
                         <Container>                            
                             <Form onSubmit={this.onSubmit}>
                                 {this.showList()}
-                                <FormGroup>
-                                    {this.showSubmit(classes)}
-                                </FormGroup>
+                                { this.props.isAuthenticated && (this.props.user.role === Role.Admin || this.props.user.role === Role.User) ?
+                                    <FormGroup>
+                                        {this.showSubmit(classes)}
+                                    </FormGroup> : null}
                             </Form>
                         </Container>
                     </ModalBody>
@@ -270,6 +270,7 @@ class StudentModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     grade: state.grade,
     supply: state.supply,
     isAuthenticated: state.auth.isAuthenticated,

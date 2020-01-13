@@ -1,53 +1,52 @@
 import React, { Component } from 'react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import { Box } from '@material-ui/core';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
-import { getGradeStudents, deleteStudent } from '../actions/studentActions';
+import { Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import { getUsers } from '../actions/authActions';
 import PropTypes from 'prop-types';
-import StudentCard from './StudentCard';
+import UserModal from './UserModal';
 
 const styles = theme => ({
     root: {
-        paddingTop: '.5rem',
+        paddingTop: '.1rem',
         paddingRight: '1rem',
-        paddingBottom: '.5rem',
+        paddingBottom: '.1rem',
         paddingLeft: '1rem'
     },    
 });
 
-class StudentList extends Component {
+class UsersList extends Component {
     static propTypes = {
-        getGradeStudents: PropTypes.func.isRequired,
-        grade: PropTypes.object.isRequired,
-        student: PropTypes.object.isRequired,
+        getUsers: PropTypes.func.isRequired,
+        auth: PropTypes.object.isRequired,
         isAuthenticated: PropTypes.bool
     }
 
-    componentDidMount = () => {        
-        if(this.props.grade.id) {
-            this.props.getGradeStudents(this.props.grade.id);
-        }
+    componentDidMount = () => {
+        this.props.getUsers();
     }
 
-    onDeleteClick = (id) => {
-        this.props.deleteStudent(id);
+    showCard = (user) => {
+        return(
+            <UserModal
+                user={ user }/>
+        )        
     }
 
     render() {
-        const students = this.props.student.students;
         const { classes } = this.props;
+        const users = this.props.auth.users;
 
         return(
             <Box>
                 <ListGroup>
-                    <TransitionGroup className="grade-list">
-                        {students.map((i) => (
+                    <TransitionGroup className="user-list">
+                        {users.map((i) => (
                             <CSSTransition key={i._id} timeout={500} classNames="fade">
                                 <ListGroupItem className={ classes.root }>
-                                    <StudentCard
-                                        student={ i } />                                  
+                                    { this.showCard(i) }
                                 </ListGroupItem>
                             </CSSTransition>
                         ))}
@@ -59,11 +58,11 @@ class StudentList extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    student: state.student,
+    auth: state.auth,
     isAuthenticated: state.auth.isAuthenticated
 })
 
 export default connect(
     mapStateToProps, 
-    { getGradeStudents, deleteStudent }
-)(withStyles(styles)(StudentList));
+    { getUsers }
+)(withStyles(styles)(UsersList));

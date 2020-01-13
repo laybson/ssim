@@ -2,6 +2,9 @@ import axios from 'axios';
 import { returnErrors } from './errorActions'
 
 import { 
+    GET_USERS,
+    EDIT_USER,
+    EDIT_USER_FAIL,
     USER_LOADING, 
     USER_LOADED,
     AUTH_ERROR,
@@ -105,4 +108,47 @@ export const tokenConfig = getState => {
     }
 
     return config;
+}
+
+export const getUsers = () => (dispatch, getState) => {
+    dispatch(setUsersLoading());
+    axios.get('/api/users', tokenConfig(getState))
+        .then(res => dispatch({
+            type: GET_USERS,
+            payload: res.data
+        }))
+        .catch(err => dispatch(
+            returnErrors(err.response.data, err.response.status))
+        )
+}
+
+export const editUser = (user, id) => (dispatch, getState) => {
+    axios.post(`/api/users/${id}`, user, tokenConfig(getState))
+        .then(res => dispatch({
+            type: EDIT_USER,
+            payload: res.data
+        }))
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status, 'EDIT_USER_FAIL'))
+            dispatch({
+                type: EDIT_USER_FAIL
+            })
+        })
+}
+
+/*export const deleteGrade = (id) => (dispatch, getState) => {
+    axios.delete(`/api/grades/${id}`, tokenConfig(getState))
+        .then(res => dispatch({
+            type: DELETE_GRADE,
+            payload: id
+        }))
+        .catch(err => dispatch(
+            returnErrors(err.response.data, err.response.status))
+        ) 
+}*/
+
+export const setUsersLoading = () => {
+    return {
+        type: USER_LOADING
+    }
 }

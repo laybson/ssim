@@ -1,9 +1,11 @@
-module.exports = (data) => {   
+module.exports = (data) => {
    let line = "";
    data.supplies.forEach(supply => {
-      const tempLine = data.student.receivedSupplies.some(rs => (rs.id === supply._id && !rs.incomplete)) ? 
-      "<tr class='item'><td>"+supply.quantity+" "+supply.name+"</td><td>SIM</td></tr>" :
-      "<tr class='item'><td>"+supply.quantity+" "+supply.name+"</td><td>NÃO</td></tr>";
+      const received = data.student.receivedSupplies.some(rs => (rs.id === supply._id && !rs.incomplete)) ? "SIM" : "NÃO";
+      const returned = supply.didactic ?
+          data.student.returnedSupplies.some(rs => (rs.id === supply._id)) ? "SIM" : "NÃO"
+          : "-";
+      const tempLine = "<tr class='item'><td>"+supply.name+"</td><td class='qtt'>"+supply.quantity+"</td><td class='received'>"+received+"</td><td class='received'>"+returned+"</td></tr>"
       line = line + tempLine;
    })
 
@@ -31,6 +33,18 @@ return `
             .justify-center {
             font-size: 10px;
             text-align: center;
+            }
+            .qtt {
+            width: 35px;
+            text-align: center !important;
+            }
+            .date {
+            width: 35px;
+            text-align: right !important;
+            }
+            .received {
+            text-align: center !important;
+            width: 70px;
             }
             .invoice-box table {
             width: 100%;
@@ -95,12 +109,16 @@ return `
          <div class="invoice-box">
             <table cellpadding="0" cellspacing="0">
                <tr class="top">
-                  <td colspan="2">
+                  <td colspan="4">
                      <table>
                         <tr>
                            <td><img  src="https://maplebear.com.br/Content/images/logo-maple-bear.svg"
-                              style="width:100%; max-width:150px;"></td>
+                              style="width:100%; max-width:150px;">
+                           </td>
                            <td>
+                             Usuário: ${data.user.name}
+                           </td>
+                           <td class='date'>
                               ${`${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`}
                            </td>
                         </tr>
@@ -114,15 +132,16 @@ return `
                </tr>
                <tr class="heading">
                   <td>Material:</td>
+                  <td class='qtt'>Qtd:</td>
                   <td>Entregue?</td>
+                  <td>Devolvido?</td>
                </tr>
                ${line}
             </table>
-            <br />
+            <br /><br />
             <p class="justify-center">
-              ________________________________________________________________<br />
-            <b>Responsável</b><br /><br />
-            Impresso por ${data.user.name}
+                ________________________________________________________________<br />
+                <b>Responsável</b>
             </p>
          </div>
       </body>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Role } from './auth/Roles';
 import {
     Modal,
     ModalHeader,
@@ -19,7 +20,7 @@ const styles = theme => ({
     root: {
         flexGrow: 1,
         display: 'flex',
-        alignItems: 'center',
+        width: '100%',
     },
     buttons: {
         flexGrow: 1,
@@ -47,6 +48,7 @@ class AddStudentModal extends Component {
     }
 
     static propTypes = {
+        user: PropTypes.object,
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
         clearErrors: PropTypes.func.isRequired
@@ -98,15 +100,15 @@ class AddStudentModal extends Component {
     render() {
         const { classes } = this.props;
         return(
-            <Box>
-                { this.props.isAuthenticated ?
+            <Box className={ classes.root }>
+                { this.props.isAuthenticated && (this.props.user.role === Role.Admin || this.props.user.role === Role.User) ?
                     <Button
                         className={ classes.buttons }
                         fullWidth={true}
                         variant="outlined"
                         onClick={this.toggle}
                     >
-                        Adicionar Estudante
+                        Adicionar Aluno
                     </Button> 
                     :
                     null
@@ -117,7 +119,7 @@ class AddStudentModal extends Component {
                     toggle={this.toggle}
                 >
                     <ModalHeader toggle={this.toggle}>
-                        Novo Estudante
+                        Novo Aluno
                     </ModalHeader>
                     <ModalBody>
                         <Form onSubmit={this.onSubmit}>
@@ -129,7 +131,7 @@ class AddStudentModal extends Component {
                                     type="text"
                                     name="name"
                                     id="supply"
-                                    placeholder="Digite o nome do estudante"
+                                    placeholder="Digite o nome do aluno"
                                     className="mb-3"
                                     onChange={this.onChange} 
                                 />
@@ -139,7 +141,7 @@ class AddStudentModal extends Component {
                                     variant="outlined"
                                     onClick={this.onSubmit}
                                 >
-                                    Adicionar Estudante
+                                    Adicionar Aluno
                                 </Button>
                             </FormGroup>
                         </Form>
@@ -151,6 +153,7 @@ class AddStudentModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     grade: state.grade,
     isAuthenticated: state.auth.isAuthenticated,
     error: state.error

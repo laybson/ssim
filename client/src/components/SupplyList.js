@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
-import { Container, ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
+import { Box } from '@material-ui/core';
 import { getGradeSupplies, deleteSupply } from '../actions/supplyActions';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import SupplyCard from './SupplyCard';
+
+const styles = theme => ({
+    root: {
+        paddingTop: '0rem',
+        paddingRight: '1rem',
+        paddingBottom: '0rem',
+        paddingLeft: '1rem'
+    },    
+});
 
 class SupplyList extends Component {
     static propTypes = {
@@ -25,15 +36,16 @@ class SupplyList extends Component {
     }
 
     render() {
-        const supplies = this.props.supply.supplies;        
+        const supplies = this.props.supply.supplies;
+        const { classes } = this.props;        
 
         return(
-            <Container>
+            <Box>
                 <ListGroup>
                     <TransitionGroup className="grade-list">
                         {supplies.map((i) => (
                             <CSSTransition key={i._id} timeout={500} classNames="fade">
-                                <ListGroupItem>
+                                <ListGroupItem className={ classes.root }>
                                     <SupplyCard
                                         supply={ i } />
                                 </ListGroupItem>
@@ -41,7 +53,7 @@ class SupplyList extends Component {
                         ))}
                         </TransitionGroup>
                 </ListGroup>
-            </Container>
+            </Box>
         )
     }
 }
@@ -54,4 +66,4 @@ const mapStateToProps = (state) => ({
 export default connect(
     mapStateToProps, 
     { getGradeSupplies, deleteSupply }
-)(SupplyList);
+)(withStyles(styles)(SupplyList));

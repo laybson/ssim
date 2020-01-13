@@ -14,9 +14,10 @@ const styles = theme => ({
         alignItems: 'center',
         '& > *': {
             margin: theme.spacing(1),
-            width: theme.spacing(16),
-            height: theme.spacing(16),
           },
+    },
+    imgBox: {
+        padding: theme.spacing(1),
     },
     titleGrade: {
         color: 'rgba(207, 31, 37, 1)',
@@ -52,30 +53,22 @@ class GradeCard extends Component {
 
         return(
             <Link to={`/grade/${grade._id}`}>
-            <Paper variant="outlined" className={ classes.root }>                
-                
-                    <Box justify="center">
-                        <Typography className={classes.titleGrade} variant='h5'>
-                            { grade.name }
-                        </Typography>
-                        <Typography className={classes.subtitleGrade}>
-                            { grade.shift }
-                        </Typography>
-                    </Box>
-                
-                {/*<Box>
-                    { this.props.isAuthenticated ?
-                        <IconButton
-                            className={ classes.delete }
-                            color="secondary" 
-                            aria-label="delete"
-                            onClick={this.onDeleteClick.bind(this, grade._id)}>
-                            <DeleteIcon />
-                        </IconButton> :
-                        null
-                    }
-                </Box>*/}
-            </Paper>
+                <Paper variant="outlined" className={ classes.root }>
+                        <Box justify="center">
+                            <Box className={ classes.imgBox }>
+                                <img
+                                    src="/logo192.png"
+                                    style={{ width: '83px', margin: 'auto', display: 'block' }}
+                                    />
+                            </Box>
+                            <Typography className={classes.titleGrade} variant='h5'>
+                                { grade.name }
+                            </Typography>
+                            <Typography className={classes.subtitleGrade}>
+                                { grade.shift }
+                            </Typography>
+                        </Box>
+                </Paper>
             </Link>
             
         )

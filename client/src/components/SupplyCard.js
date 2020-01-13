@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Box, IconButton } from '@material-ui/core';
+import { Role } from './auth/Roles';
+import { Box, IconButton, Tooltip } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
@@ -33,12 +34,15 @@ const styles = theme => ({
 
 class SupplyCard extends Component {
     static propTypes = {
+        user: PropTypes.object,
         isAuthenticated: PropTypes.bool,
         student: PropTypes.object
     }
 
     onDeleteClick = (id) => {
-        this.props.deleteSupply(id);
+        const message = "Realmente deseja deletar "+this.props.supply.name+"?";
+        const result = window.confirm(message);
+        if(result) this.props.deleteSupply(id);
     }
 
     report = (classes) => { 
@@ -58,14 +62,16 @@ class SupplyCard extends Component {
                     className={ this.report(classes) }
                     aria-label="report" />
                 { supply.quantity+" "+supply.name }
-                { this.props.isAuthenticated ?
-                    <IconButton
-                        className={ classes.delete }
-                        color="secondary" 
-                        aria-label="delete"
-                        onClick={this.onDeleteClick.bind(this, supply._id)}>
-                        <DeleteIcon />
-                    </IconButton> :
+                { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
+                    <Tooltip title="Apagar material">
+                        <IconButton
+                            className={ classes.delete }
+                            color="secondary" 
+                            aria-label="delete"
+                            onClick={this.onDeleteClick.bind(this, supply._id)}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip> :
                     null
                 }             
             </Box>
@@ -74,6 +80,7 @@ class SupplyCard extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     isAuthenticated: state.auth.isAuthenticated,
     student: state.student
 })

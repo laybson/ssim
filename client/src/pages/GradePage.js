@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Role } from '../components/auth/Roles';
 import { Button, Container, Grid, Box, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
@@ -39,6 +40,7 @@ class GradePage extends Component {
         pageGrade: {}
     }
     static propTypes = {
+        user: PropTypes.object,
         isAuthenticated: PropTypes.bool,
         grade: PropTypes.object.isRequired,
         getGradeById: PropTypes.func.isRequired,
@@ -52,8 +54,12 @@ class GradePage extends Component {
     }
 
     onDeleteClick = (id) => {
-        this.props.deleteGrade(id)
-        window.location = '/';
+        const message = "Realmente deseja deletar "+this.props.grade.grade.name+"?";
+        const result = window.confirm(message);
+        if(result) {
+            this.props.deleteGrade(id)
+            window.location = '/';
+        }
     }
 
     render() {
@@ -75,7 +81,7 @@ class GradePage extends Component {
                         <Box className={classes.root}>
                             <Typography className={classes.titleGrade} variant='h6'>
                                 Materiais
-                            </Typography>                            
+                            </Typography>
                             <AddSupplyModal />
                         </Box>
                         <SupplyList 
@@ -84,7 +90,7 @@ class GradePage extends Component {
                     <Grid item xs={12} sm={6}>
                         <Box className={classes.root}>
                             <Typography className={classes.titleGrade} variant='h6'>
-                                Estudantes
+                                Alunos
                             </Typography>
                             <AddStudentModal />
                         </Box>
@@ -93,7 +99,7 @@ class GradePage extends Component {
                     </Grid>
                 </Grid>
                 <Box justify="center" className={classes.delete}>
-                    { this.props.isAuthenticated ?
+                    { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
                         <Button
                             color="secondary"
                             variant="contained"
@@ -110,6 +116,7 @@ class GradePage extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     grade: state.grade,
     isAuthenticated: state.auth.isAuthenticated
 })

@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Role } from './auth/Roles';
 import {
     Collapse,
     Navbar,
@@ -67,9 +68,15 @@ class AppNavbar extends Component {
                         </strong>
                     </span>
                 </NavItem>
-                <NavLink href="/history">                    
-                        Histórico
-                </NavLink>
+                { user && user.role === Role.Admin ? 
+                    <Fragment>
+                        <NavLink href="/history">                    
+                            Histórico
+                        </NavLink>
+                        <NavLink href="/management">
+                            Gerenciar
+                        </NavLink>                        
+                    </Fragment> : '' }                
                 <NavItem>
                     <Logout />
                 </NavItem>                

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Role } from './auth/Roles';
 import {
     Modal,
     ModalHeader,
@@ -15,11 +16,28 @@ import { addSupply } from '../actions/supplyActions';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
 
+const LightSwitch = withStyles({
+    switchBase: {
+      color: 'rgba(207, 31, 37, 1)',
+      '&$checked': {
+        color: 'rgba(31, 207, 37, 1)',
+      },
+      '& + $track': {
+        backgroundColor: 'rgba(207, 31, 37, 1)',
+      },
+      '&$checked + $track': {
+        backgroundColor: 'rgba(31, 207, 37, 1)',
+      },
+    },
+    checked: {},
+    track: {},
+  })(Switch);
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
         display: 'flex',
-        alignItems: 'center',
+        width: '100%',
     },
     buttons: {
         flexGrow: 1,
@@ -47,6 +65,7 @@ class AddSupplyModal extends Component {
     }
 
     static propTypes = {
+        user: PropTypes.object,
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
         clearErrors: PropTypes.func.isRequired
@@ -106,8 +125,8 @@ class AddSupplyModal extends Component {
     render() {
         const { classes } = this.props;
         return(
-            <Box>
-                { this.props.isAuthenticated ? 
+            <Box className={ classes.root }>
+                { this.props.isAuthenticated && (this.props.user.role === Role.Admin || this.props.user.role === Role.User) ?
                     <Button
                         className={ classes.buttons }
                         fullWidth={true}
@@ -155,15 +174,15 @@ class AddSupplyModal extends Component {
                                 <FormControlLabel
                                     className="mb-3"
                                     control={
-                                    <Switch
-                                        name="didactic"
+                                    <LightSwitch
+                                        name="didactic"                                        
                                         checked={this.state.didactic}
                                         onChange={this.onChange}
                                         value="didactic"
                                         color="primary"                                        
                                     />
                                     }
-                                    label="O Material é Didático?"
+                                    label="O Material é Devolvível?"
                                 />
                                 <Button
                                     className={ classes.buttons }
@@ -183,6 +202,7 @@ class AddSupplyModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     grade: state.grade,
     isAuthenticated: state.auth.isAuthenticated,
     error: state.error

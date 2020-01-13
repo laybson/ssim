@@ -17,6 +17,9 @@ export const ADD_STUDENT_FAIL = 'ADD_STUDENT_FAIL';
 export const DELETE_STUDENT = 'DELETE_STUDENT';
 export const STUDENTS_LOADING = 'STUDENTS_LOADING';
 
+export const GET_USERS = 'GET_USERS';
+export const EDIT_USER = 'EDIT_USER';
+export const EDIT_USER_FAIL = 'EDIT_USER_FAIL';
 export const USER_LOADING = 'USER_LOADING';
 export const USER_LOADED = 'USER_LOADED';
 export const AUTH_ERROR = 'AUTH_ERROR';

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Role } from './auth/Roles';
 import {
     Modal,
     ModalHeader,
@@ -45,6 +46,7 @@ class GradeModal extends Component {
     }
 
     static propTypes = {
+        user: PropTypes.object,
         isAuthenticated: PropTypes.bool,
         error: PropTypes.object.isRequired,
         clearErrors: PropTypes.func.isRequired
@@ -96,7 +98,7 @@ class GradeModal extends Component {
         const { classes } = this.props;
         return(
             <Box>
-                { this.props.isAuthenticated ? 
+                { this.props.isAuthenticated && this.props.user.role === Role.Admin ? 
                     <Button
                         className="mb-3"
                         fullWidth={true}
@@ -161,6 +163,7 @@ class GradeModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
+    user: state.auth.user,
     grade: state.grade,
     isAuthenticated: state.auth.isAuthenticated,
     error: state.error

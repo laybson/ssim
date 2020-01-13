@@ -1,11 +1,50 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
 const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
 // User Model
 const User = require("../../models/User");
+
+// @route   GET api/users
+// @desc    Get All Users
+// @access  Private
+router.get('/', auth, (req, res) => {
+    User.find()
+        .then(users => res.json(users))
+});
+
+// @route   DELETE api/users/:id
+// @desc    Delete A User
+// @access  Private
+router.delete('/:id', auth, (req, res) => {
+    User.findById(req.params.id)
+        .then(user => user.remove().then(() => res.json({success: true})))
+        .catch(err => res.status(404).json({success: false}))
+});
+
+// @route   POST api/users
+// @desc    Edit A User
+// @access  Private
+router.post('/:id', auth, (req, res) => {
+    User.findById(req.body._id).then(user => {        
+        if(user) {            
+            User.findByIdAndUpdate(
+                req.body._id, 
+                {
+                    $set: 
+                    {
+                        name: req.body.name,
+                        role: req.body.role
+                    }
+                }
+            ).then(user => res.json(user));
+        }
+    }).catch(err => res.status(404).json({success: false}))
+    
+});
 
 // @route   POST api/users
 // @desc    Register a new user
@@ -26,7 +65,7 @@ router.post('/', (req, res) => {
             }
 
             const newUser = new User({
-                name, email, password
+                name, email, password, role:'viewer'
             });
 
             // Creat salt & hash
@@ -50,7 +89,8 @@ router.post('/', (req, res) => {
                                     user: {
                                         id: user.id,
                                         name: user.name,
-                                        email: user.email
+                                        email: user.email,
+                                        role: user.role
                                     }
                                 })
                             }
