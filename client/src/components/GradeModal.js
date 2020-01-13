@@ -42,7 +42,7 @@ class GradeModal extends Component {
     state = {
         modal: false,
         name: '',
-        shift: ''
+        shift: 'Manhã'
     }
 
     static propTypes = {

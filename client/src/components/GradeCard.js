@@ -58,6 +58,7 @@ class GradeCard extends Component {
                             <Box className={ classes.imgBox }>
                                 <img
                                     src="/logo192.png"
+                                    alt="Maple Bear"
                                     style={{ width: '83px', margin: 'auto', display: 'block' }}
                                     />
                             </Box>

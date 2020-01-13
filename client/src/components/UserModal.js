@@ -54,7 +54,7 @@ class UserModal extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { error } = this.props;
+        //const { error } = this.props;
     }
 
     componentDidMount = () => {
