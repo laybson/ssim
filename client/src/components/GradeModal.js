@@ -42,7 +42,8 @@ class GradeModal extends Component {
     state = {
         modal: false,
         name: '',
-        shift: 'Manhã'
+        shift: 'Manhã',
+        level: 'Infantil'
     }
 
     static propTypes = {
@@ -84,7 +85,8 @@ class GradeModal extends Component {
 
         const newGrade = {
             name: this.state.name,
-            shift: this.state.shift
+            shift: this.state.shift,
+            level: this.state.level
         }
 
         // Add grade via addGrade action
@@ -120,31 +122,45 @@ class GradeModal extends Component {
                     <ModalBody>
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>
-                                <Label for="grade">
+                                <Label for="name">
                                     Turma
                                 </Label>
                                 <Input 
                                     type="text"
                                     name="name"
-                                    id="grade"
+                                    id="name"
                                     placeholder="Digite o nome da turma"
                                     className="mb-3"
                                     onChange={this.onChange} 
                                 />
-                                <Label for="grade">
+                                <Label for="level">
+                                    Nível
+                                </Label>
+                                <Input 
+                                    type="select"
+                                    name="level"
+                                    id="level"
+                                    placeholder="Digite o nível da turma"
+                                    className="mb-3"
+                                    onChange={this.onChange} 
+                                >
+                                    <option>Infantil</option>
+                                    <option>Fundamental</option>
+                                </Input>
+                                <Label for="shift">
                                     Turno
                                 </Label>
                                 <Input 
                                     type="select"
                                     name="shift"
-                                    id="grade"
+                                    id="shift"
                                     placeholder="Digite o turno da turma"
                                     className="mb-3"
                                     onChange={this.onChange} 
                                 >
                                     <option>Manhã</option>
                                     <option>Tarde</option>
-                                </Input>
+                                </Input>                                
                                 <Button
                                     className={ classes.buttons }
                                     fullWidth={true}

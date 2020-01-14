@@ -47,6 +47,24 @@ class GradeCard extends Component {
         this.props.deleteGrade(id);
     }
 
+    showLogo = (classes) => {
+        return this.props.grade.level === 'Fundamental' ?
+            (<Box className={ classes.imgBox }>
+                <img
+                    src="/elementary.png"
+                    alt="Fundamental"
+                    style={{ height: '84px', display: 'block' }}
+                    />
+            </Box>) : 
+            (<Box className={ classes.imgBox }>
+                <img
+                    src="/school.png"
+                    alt="Infantil"
+                    style={{ height: '84px', display: 'block' }}
+                    />
+            </Box>)
+    }
+
     render() {
         const grade = this.props.grade;
         const { classes } = this.props;
@@ -55,13 +73,7 @@ class GradeCard extends Component {
             <Link to={`/grade/${grade._id}`}>
                 <Paper variant="outlined" className={ classes.root }>
                         <Box justify="center">
-                            <Box className={ classes.imgBox }>
-                                <img
-                                    src="/logo192.png"
-                                    alt="Maple Bear"
-                                    style={{ width: '83px', margin: 'auto', display: 'block' }}
-                                    />
-                            </Box>
+                            { this.showLogo(classes) }
                             <Typography className={classes.titleGrade} variant='h5'>
                                 { grade.name }
                             </Typography>

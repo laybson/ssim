@@ -34,7 +34,8 @@ router.post('/', auth, (req, res) => {
 
     const newGrade = new Grade({
         name: req.body.name,
-        shift: req.body.shift
+        shift: req.body.shift,
+        level: req.body.level
     });
 
     newGrade.save().then(grade => res.json(grade));

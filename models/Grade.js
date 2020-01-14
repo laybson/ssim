@@ -10,6 +10,10 @@ const GradeSchema = new Schema({
     shift: {
         type: String,
         required: true
+    },
+    level: {
+        type: String,
+        required: true
     }
 });
 

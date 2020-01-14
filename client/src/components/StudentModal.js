@@ -149,7 +149,7 @@ class StudentModal extends Component {
                     variant="outlined"
                     onClick={this.toggle}
                 >
-                    Recebimento de Materiais
+                    Recebimento
                 </Button>                
             )
         } else if(this.props.returning){
@@ -160,7 +160,7 @@ class StudentModal extends Component {
                     variant="outlined"
                     onClick={this.toggle}
                 >
-                    Devolução de Materiais
+                    Devolução
                 </Button>
             )
         }
