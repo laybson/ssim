@@ -18,6 +18,8 @@ const styles = theme => ({
     },
     imgBox: {
         padding: theme.spacing(1),
+        alignItems: 'center',
+        textAlign: 'center',
     },
     titleGrade: {
         color: 'rgba(207, 31, 37, 1)',
@@ -53,14 +55,14 @@ class GradeCard extends Component {
                 <img
                     src="/elementary.png"
                     alt="Fundamental"
-                    style={{ height: '84px', display: 'block' }}
+                    style={{ height: '84px' }}
                     />
             </Box>) : 
             (<Box className={ classes.imgBox }>
                 <img
                     src="/school.png"
                     alt="Infantil"
-                    style={{ height: '84px', display: 'block' }}
+                    style={{ height: '84px' }}
                     />
             </Box>)
     }

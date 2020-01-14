@@ -65,11 +65,13 @@ class GradeModal extends Component {
         }
     }
 
-
     toggle = () => {
         this.props.clearErrors();
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            name: '',
+            shift: 'Manhã',
+            level: 'Infantil'
         });
     }
 
@@ -138,6 +140,7 @@ class GradeModal extends Component {
                                 </Label>
                                 <Input 
                                     type="select"
+                                    defaultValue={this.state.level}
                                     name="level"
                                     id="level"
                                     placeholder="Digite o nível da turma"
@@ -152,6 +155,7 @@ class GradeModal extends Component {
                                 </Label>
                                 <Input 
                                     type="select"
+                                    defaultValue={this.state.shift}
                                     name="shift"
                                     id="shift"
                                     placeholder="Digite o turno da turma"

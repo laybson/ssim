@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import GradeList from '../components/GradeList';
 import GradeModal from '../components/GradeModal';
-import { Container } from '@material-ui/core';
+import { Container, Box } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -11,25 +13,51 @@ const styles = theme => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
-    paper: {
-        padding: theme.spacing(2),
+    unlogged: {
+        padding: theme.spacing(3),
+        alignItems: 'center',
         textAlign: 'center',
-        color: theme.palette.text.secondary,
+        //backgroundColor: 'rgba(187, 21, 27, 1)',
+        //backgroundImage: '/school.png'
     },
 });
 
-class GradeListPage extends Component {   
+class GradeListPage extends Component {
+    static propTypes = {
+        isAuthenticated: PropTypes.bool
+    }
+
+    showGrades = (classes) => {
+        return this.props.isAuthenticated ?
+        <Container className={classes.root}>
+            <GradeModal />
+            <GradeList />
+        </Container> : 
+        <Box className={classes.unlogged}>
+            <img
+                src="/school.png"
+                alt="Infantil"
+                style={{ height: '300px', margin:10 }}
+                />
+            <img
+                src="/elementary.png"
+                alt="Infantil"
+                style={{ height: '300px', margin:10  }}
+                />
+        </Box>
+    }
 
     render() {
         const { classes } = this.props;
         
-        return (      
-            <Container className={classes.root}>
-                <GradeModal />
-                <GradeList />    
-            </Container>            
+        return (
+            this.showGrades(classes)       
         );
     }
 }
 
-export default withStyles(styles)(GradeListPage);
+const mapStateToProps = (state) => ({
+    isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps,{})(withStyles(styles)(GradeListPage));

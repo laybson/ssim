@@ -5,7 +5,6 @@ import GradePage from './pages/GradePage';
 import GradeListPage from './pages/GradeListPage';
 import HistoryPage from './pages/HistoryPage';
 import UserPage from './pages/UserPage';
-
 import { Provider } from 'react-redux';
 import store from './store'; 
 import { loadUser } from './actions/authActions';

@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 // @access  Public
 router.get('/grade/:id', (req, res) => {
     Student.find({ grade: req.params.id })
+        .sort({'name': 'asc'})
         .then(students => res.json(students))
 });
 

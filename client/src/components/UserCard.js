@@ -4,10 +4,14 @@ import {
     Box,
     Grid, 
     Tooltip,
+    IconButton,
     Typography } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import UserModal from './UserModal';
+import { deleteUser, logout } from '../actions/authActions';
 
 const styles = theme => ({
     root: {
@@ -25,7 +29,11 @@ const styles = theme => ({
     },
     role: {
         color: 'rgba(0, 0, 0, 1)',
-        textAlign: 'left',
+        textAlign: 'right',
+    },
+    delete: {
+        marginLeft: "auto",
+        marginRight: -12,        
     },
 });
 
@@ -74,8 +82,22 @@ class UserCard extends Component {
         this.changeRole(user, v);        
     } 
 
-    showTooltip = () => {
+    showEditTooltip = () => {
         return "Editar "+this.props.user.name
+    }
+
+    showDeleteTooltip = () => {
+        return "Apagar "+this.props.user.name
+    }
+
+    onDeleteClick = (id) => {        
+        const message = "Realmente deseja deletar "+this.props.user.name+"?";
+        const result = window.confirm(message);
+        if(result) {
+            this.props.deleteUser(id); 
+            if(id === this.props.auth.user._id)
+                this.props.logout();                       
+        }
     }
 
     render() {
@@ -84,25 +106,42 @@ class UserCard extends Component {
 
         return(
             <Box>
-                <Tooltip title={this.showTooltip()} placement="right">
-                    <Grid container>
-                        <Grid item xs={12} sm={9}>
-                            <Typography className={classes.name}>
-                                { user.name }
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <Typography className={classes.role}>
-                                { this.mapRoleStateToValue() }  
-                            </Typography>                         
-                        </Grid>
-                        <Grid item xs={12} sm={12}>
+                <Grid container>
+                    <Grid item xs={12} sm={9}>
+                        <Typography className={classes.name}>
+                            { user.name }
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                        <Typography className={classes.role}>
+                            { this.mapRoleStateToValue() }  
+                        </Typography>                         
+                    </Grid>
+                    <Grid item xs={12} sm={10}>
                         <Typography className={classes.email}>
                             { user.email }
                         </Typography>
-                        </Grid>
                     </Grid>
-                </Tooltip>
+                    <Grid item xs={12} sm={1}>
+                        <Tooltip title={this.showEditTooltip()} placement="left">
+                            <Box>
+                                <UserModal
+                                    user={ user }/>
+                            </Box>                            
+                        </Tooltip>                      
+                    </Grid>
+                    <Grid item xs={12} sm={1}>
+                        <Tooltip title={this.showDeleteTooltip()} placement="right">
+                            <IconButton
+                                className={ classes.delete }
+                                color="secondary" 
+                                aria-label="delete"
+                                onClick={this.onDeleteClick.bind(this, user._id)}>
+                                <DeleteIcon />
+                            </IconButton>   
+                        </Tooltip>                    
+                    </Grid>
+                </Grid>
             </Box>
         )
     }
@@ -115,5 +154,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(
     mapStateToProps, 
-    {  }
+    { deleteUser, logout }
 )(withStyles(styles)(UserCard));

@@ -5,6 +5,7 @@ import {
     GET_USERS,
     EDIT_USER,
     EDIT_USER_FAIL,
+    DELETE_USER,
     USER_LOADING, 
     USER_LOADED,
     AUTH_ERROR,
@@ -137,16 +138,16 @@ export const editUser = (user, id) => (dispatch, getState) => {
         })
 }
 
-/*export const deleteGrade = (id) => (dispatch, getState) => {
-    axios.delete(`/api/grades/${id}`, tokenConfig(getState))
+export const deleteUser = (id) => (dispatch, getState) => {
+    axios.delete(`/api/users/${id}`, tokenConfig(getState))
         .then(res => dispatch({
-            type: DELETE_GRADE,
+            type: DELETE_USER,
             payload: id
         }))
         .catch(err => dispatch(
             returnErrors(err.response.data, err.response.status))
         ) 
-}*/
+}
 
 export const setUsersLoading = () => {
     return {

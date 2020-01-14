@@ -87,7 +87,8 @@ class AddSupplyModal extends Component {
     toggle = () => {
         this.props.clearErrors();
         this.setState({
-            modal: !this.state.modal
+            modal: !this.state.modal,
+            didactic: false
         });
     }
 

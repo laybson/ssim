@@ -9,13 +9,13 @@ import {
     Label,
     Input
 } from 'reactstrap';
-import { Button, Box, CardActionArea } from '@material-ui/core';
+import { Button, Box, IconButton } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
 import { editUser } from '../actions/authActions';
-import UserCard from './UserCard';
 
 const styles = theme => ({
     root: {
@@ -87,15 +87,21 @@ class UserModal extends Component {
         this.props.editUser(renewUser, this.props.auth.user);
                 
         this.toggle();
-        window.location = "/management"
+        if(this.props.auth.user._id === renewUser._id && 
+            renewUser.role !== Role.Admin)        
+            window.location = "/"
+        else 
+            window.location = "/management"
     }
 
     showButton = (classes) => {
         return (
-            <CardActionArea onClick={this.toggle} href="#">
-                <UserCard 
-                    user={ this.props.user }/>
-            </CardActionArea>
+            <IconButton
+                className={ classes.delete }
+                aria-label="edit"
+                onClick={this.toggle}>
+                <EditIcon />
+            </IconButton> 
         )
     }
 

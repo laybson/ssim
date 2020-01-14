@@ -6,7 +6,7 @@ import { Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { getUsers } from '../actions/authActions';
 import PropTypes from 'prop-types';
-import UserModal from './UserModal';
+import UserCard from './UserCard';
 
 const styles = theme => ({
     root: {
@@ -30,7 +30,7 @@ class UsersList extends Component {
 
     showCard = (user) => {
         return(
-            <UserModal
+            <UserCard
                 user={ user }/>
         )        
     }
