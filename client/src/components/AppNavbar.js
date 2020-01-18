@@ -75,7 +75,10 @@ class AppNavbar extends Component {
                         </NavLink>
                         <NavLink href="/management">
                             Gerenciar
-                        </NavLink>                        
+                        </NavLink>
+                        <NavLink href="/report">
+                            Relatório
+                        </NavLink>  
                     </Fragment> : '' }                
                 <NavItem>
                     <Logout />

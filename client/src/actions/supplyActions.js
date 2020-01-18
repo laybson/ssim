@@ -3,6 +3,18 @@ import { GET_SUPPLIES, EDIT_SUPPLY, EDIT_SUPPLY_FAIL, ADD_SUPPLY, ADD_SUPPLY_FAI
 import { tokenConfig } from './authActions';
 import { returnErrors } from './errorActions';
 
+export const getSupplies = () => dispatch => {
+    dispatch(setSuppliesLoading());
+    axios.get('/api/supplies')
+        .then(res => dispatch({
+            type: GET_SUPPLIES,
+            payload: res.data
+        }))
+        .catch(err => dispatch(
+            returnErrors(err.response.data, err.response.status))
+        )
+}
+
 export const getGradeSupplies = id => dispatch => {
     dispatch(setSuppliesLoading());
     axios.get(`/api/supplies/grade/${id}`)

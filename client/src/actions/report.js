@@ -28,8 +28,7 @@ export const getStudentReport = (supplies, student) => {
         }else{
             return true;
         }
-    });
-    
+    });    
 }
 
 export const getGradeReport = (supplies, students) => {

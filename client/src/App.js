@@ -4,6 +4,7 @@ import AppNavbar from './components/AppNavbar';
 import GradePage from './pages/GradePage';
 import GradeListPage from './pages/GradeListPage';
 import HistoryPage from './pages/HistoryPage';
+import ReportPage from './pages/ReportPage';
 import UserPage from './pages/UserPage';
 import { Provider } from 'react-redux';
 import store from './store'; 
@@ -27,6 +28,7 @@ class App extends Component {
             <Route path="/grade/:id" exact component={GradePage} />
             <Route path="/history" exact component={HistoryPage} />
             <Route path="/management" exact component={UserPage} />
+            <Route path="/report" exact component={ReportPage} />
           </div>
         </Provider>
       </Router>

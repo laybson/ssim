@@ -3,6 +3,18 @@ import { GET_STUDENTS, ADD_STUDENT, ADD_STUDENT_FAIL, DELETE_STUDENT, STUDENTS_L
 import { tokenConfig } from './authActions';
 import { returnErrors } from './errorActions';
 
+export const getStudents = () => dispatch => {
+    dispatch(setStudentsLoading());
+    axios.get('/api/students')
+        .then(res => dispatch({
+            type: GET_STUDENTS,
+            payload: res.data
+        }))
+        .catch(err => dispatch(
+            returnErrors(err.response.data, err.response.status))
+        )
+}
+
 export const getGradeStudents = id => dispatch => {
     dispatch(setStudentsLoading());
     axios.get(`/api/students/grade/${id}`)

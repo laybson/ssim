@@ -27,7 +27,7 @@ class StudentList extends Component {
 
     componentDidMount = () => {        
         if(this.props.grade.id) {
-            this.props.getGradeStudents(this.props.grade.id);
+            this.props.getGradeStudents(this.props.grade.id);          
         }
     }
 
@@ -36,7 +36,9 @@ class StudentList extends Component {
     }
 
     render() {
-        const students = this.props.student.students;
+        const students = this.props.student.students.sort((a,b) => {
+            return ('' + a.name).localeCompare(b.name);
+        })
         const { classes } = this.props;
 
         return(
