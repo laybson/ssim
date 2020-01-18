@@ -9,12 +9,19 @@ import {
     Label,
     Input
 } from 'reactstrap';
-import { Button, Switch, Box, FormControlLabel } from '@material-ui/core';
+import { 
+    Button, 
+    Box, 
+    IconButton, 
+    FormControlLabel, 
+    Switch 
+} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { addSupply } from '../actions/supplyActions';
 import PropTypes from 'prop-types';
 import { clearErrors } from '../actions/errorActions';
+import { editSupply } from '../actions/supplyActions';
 
 const LightSwitch = withStyles({
     switchBase: {
@@ -37,7 +44,7 @@ const styles = theme => ({
     root: {
         flexGrow: 1,
         display: 'flex',
-        width: '100%',
+        alignItems: 'center',
     },
     buttons: {
         flexGrow: 1,
@@ -55,40 +62,32 @@ const styles = theme => ({
     },
 });
 
-class AddSupplyModal extends Component {
+class SupplyModal extends Component {
     state = {
-        modal: false,
         name: '',
-        grade: '',
         quantity: 1,
         didactic: false
     }
 
     static propTypes = {
-        user: PropTypes.object,
+        supply: PropTypes.object.isRequired,
+        auth: PropTypes.object.isRequired,
         isAuthenticated: PropTypes.bool,
-        error: PropTypes.object.isRequired,
+        error: PropTypes.object.isRequired,    
         clearErrors: PropTypes.func.isRequired
     }
 
-    componentDidUpdate(prevProps) {
-        const { error } = this.props;
-
-        if(error !== prevProps.error) {
-            if(error.id === 'ADD_SUPPLY_FAIL') {
-                this.setState({ msg: error.msg.msg });
-            } else {
-                this.setState({ msg: null })
-            }
-        }
+    componentDidMount = () => {
+        this.setState({name:this.props.supply.name})
+        this.setState({quantity:this.props.supply.quantity})
+        this.setState({didactic:this.props.supply.didactic})
     }
 
 
     toggle = () => {
         this.props.clearErrors();
         this.setState({
-            modal: !this.state.modal,
-            didactic: false
+            modal: !this.state.modal
         });
     }
 
@@ -102,61 +101,74 @@ class AddSupplyModal extends Component {
         });
     }
 
-    switchChange = () => {
-        this.didactic = !this.didactic;
-    }
-
     onSubmit = (e) => {
         e.preventDefault();
-
-        this.grade = this.props.grade.grade._id
-
-        const newSupply = {
+        const renewSupply = {
+            _id: this.props.supply._id,
             name: this.state.name,
-            grade: this.grade,
             quantity: this.state.quantity,
             didactic: this.state.didactic
-        }
+        };
 
-        this.props.addSupply(newSupply);
-        
+        this.props.editSupply(renewSupply, this.props.supply._id);
+                
         this.toggle();
+        window.location = `/grade/${this.props.grade.grade._id}`
     }
+
+    showButton = (classes) => {
+        return (
+            <IconButton
+                className={ classes.delete }
+                aria-label="edit"
+                onClick={this.toggle}>
+                <EditIcon />
+            </IconButton> 
+        )
+    }
+
+    showSubmit = (classes) => {
+        if(!this.props.isAuthenticated){
+            return null;
+        }
+        return(
+            <Button
+                className={ classes.buttons }
+                fullWidth={true}
+                variant="outlined"
+                onClick={this.onSubmit}
+            >
+                Concluir Gerenciamento
+            </Button>
+        )
+    }    
 
     render() {
         const { classes } = this.props;
         return(
-            <Box className={ classes.root }>
-                { this.props.isAuthenticated && (this.props.user.role === Role.Admin || this.props.user.role === Role.User) ?
-                    <Button
-                        className={ classes.buttons }
-                        fullWidth={true}
-                        variant="outlined"
-                        onClick={this.toggle}
-                    >
-                        Adicionar Material
-                    </Button> :
-                    null
-                }
+            <Box>
+                { this.props.isAuthenticated && this.props.auth.user.role === Role.Admin ?
+                    this.showButton(classes) : null}
                 
                 <Modal
                     isOpen={this.state.modal}
                     toggle={this.toggle}
                 >
                     <ModalHeader toggle={this.toggle}>
-                        Novo Material
+                        Editar { this.props.supply.name } 
                     </ModalHeader>
                     <ModalBody>
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>
-                                <Label for="supply">
-                                    Material
+                                <Label for="grade">
+                                    Nome
                                 </Label>
                                 <Input 
                                     type="text"
                                     name="name"
-                                    id="supply"
-                                    placeholder="Digite o nome do material"
+                                    value={ this.state.name }
+                                    id="name"
+                                    placeholder="Digite o nome do usuário"
                                     className="mb-3"
                                     onChange={this.onChange} 
                                 />
@@ -167,11 +179,12 @@ class AddSupplyModal extends Component {
                                     type="number"
                                     min="1"
                                     name="quantity"
+                                    value={ this.state.quantity }
                                     id="supply"
                                     placeholder="Digite a quantidade"
                                     className="mb-3"
                                     onChange={this.onChange} 
-                                />
+                                />                                
                                 <FormControlLabel
                                     className="mb-3"
                                     control={
@@ -191,8 +204,8 @@ class AddSupplyModal extends Component {
                                     variant="outlined"
                                     onClick={this.onSubmit}
                                 >
-                                    Adicionar Material
-                                </Button> 
+                                    Editar Material
+                                </Button>
                             </FormGroup>
                         </Form>
                     </ModalBody>
@@ -203,10 +216,10 @@ class AddSupplyModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    user: state.auth.user,
+    auth: state.auth,
     grade: state.grade,
     isAuthenticated: state.auth.isAuthenticated,
     error: state.error
 });
 
-export default connect(mapStateToProps, { addSupply, clearErrors })(withStyles(styles)(AddSupplyModal));
+export default connect(mapStateToProps, { clearErrors, editSupply })(withStyles(styles)(SupplyModal));

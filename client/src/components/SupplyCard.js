@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Role } from './auth/Roles';
-import { Box, IconButton, Tooltip } from '@material-ui/core';
+import { Box, IconButton, Tooltip, Grid  } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import StopIcon from '@material-ui/icons/Stop';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { deleteSupply } from '../actions/supplyActions';
 import { getSupplyReport } from '../actions/report';
+import SupplyModal from './SupplyModal';
 
 const styles = theme => ({
     root: {
@@ -52,28 +53,53 @@ class SupplyCard extends Component {
         return classes.reportFalse;
     }
 
+    showDevolvivel = () => {
+        return this.props.supply.didactic ? "Devolvível" : "Não Devolvível";
+    }
+
     render() {
         const supply = this.props.supply;
         const { classes } = this.props;        
 
         return(
-            <Box className={ classes.root }>
-                <StopIcon 
-                    className={ this.report(classes) }
-                    aria-label="report" />
-                { supply.quantity+" "+supply.name }
-                { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
-                    <Tooltip title="Apagar material">
-                        <IconButton
-                            className={ classes.delete }
-                            color="secondary" 
-                            aria-label="delete"
-                            onClick={this.onDeleteClick.bind(this, supply._id)}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip> :
-                    null
-                }             
+            <Box>
+                <Grid container>
+                    <Grid item xs={12} sm={10}  className={ classes.root }>
+                        <Tooltip title={ this.showDevolvivel() } placement="right">
+                            <Box>
+                                <StopIcon 
+                                    className={ this.report(classes) }
+                                    aria-label="report" />
+                                { supply.quantity+" "+supply.name }
+                            </Box>
+                        </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} sm={1}>
+                        { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
+                            <Tooltip title="Editar material">
+                                <Box>
+                                    <SupplyModal 
+                                        supply={ supply }/>
+                                </Box>
+                            </Tooltip> :
+                            null
+                        }
+                    </Grid>
+                    <Grid item xs={12} sm={1}>
+                        { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
+                            <Tooltip title="Apagar material">
+                                <IconButton
+                                    className={ classes.delete }
+                                    color="secondary" 
+                                    aria-label="delete"
+                                    onClick={this.onDeleteClick.bind(this, supply._id)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Tooltip> :
+                            null
+                        }                               
+                    </Grid>                        
+                </Grid>
             </Box>
         )
     }

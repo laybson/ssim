@@ -41,6 +41,29 @@ router.post('/', auth, (req, res) => {
     newSupply.save().then(supply => res.json(supply));
 });
 
+// @route   POST api/supplies
+// @desc    Edit A Supply
+// @access  Private
+router.post('/:id', auth, (req, res) => {
+    console.log('req.body:',req.body)
+    Supply.findById(req.body._id).then(supply => {        
+        if(supply) {            
+            Supply.findByIdAndUpdate(
+                req.body._id, 
+                {
+                    $set: 
+                    {
+                        name: req.body.name,
+                        quantity: req.body.quantity,
+                        didactic: req.body.didactic
+                    }
+                }
+            ).then(supply => res.json(supply));
+        }
+    }).catch(err => res.status(404).json({success: false}))
+    
+});
+
 // @route   DELETE api/supplies/:id
 // @desc    Delete A Supply
 // @access  Private

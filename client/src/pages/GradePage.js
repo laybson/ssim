@@ -100,13 +100,15 @@ class GradePage extends Component {
                 </Grid>
                 <Box justify="center" className={classes.delete}>
                     { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
-                        <Button
-                            color="secondary"
-                            variant="contained"
-                            onClick={this.onDeleteClick.bind(this, grade._id)}
-                        >
-                            Apagar Turma
-                        </Button> :
+                        <Box>
+                            <Button
+                                color="secondary"
+                                variant="contained"
+                                onClick={this.onDeleteClick.bind(this, grade._id)}
+                            >
+                                Apagar Turma
+                            </Button>
+                        </Box> :
                         null
                     }
                 </Box>

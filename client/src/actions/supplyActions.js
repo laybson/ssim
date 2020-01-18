@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { GET_SUPPLIES, ADD_SUPPLY, ADD_SUPPLY_FAIL, DELETE_SUPPLY, SUPPLIES_LOADING } from './types';
+import { GET_SUPPLIES, EDIT_SUPPLY, EDIT_SUPPLY_FAIL, ADD_SUPPLY, ADD_SUPPLY_FAIL, DELETE_SUPPLY, SUPPLIES_LOADING } from './types';
 import { tokenConfig } from './authActions';
 import { returnErrors } from './errorActions';
 
@@ -38,6 +38,20 @@ export const deleteSupply = (id) => (dispatch, getState) => {
         .catch(err => dispatch(
             returnErrors(err.response.data, err.response.status))
         ) 
+}
+
+export const editSupply = (supply, id) => (dispatch, getState) => {
+    axios.post(`/api/supplies/${id}`, supply, tokenConfig(getState))
+        .then(res => dispatch({
+            type: EDIT_SUPPLY,
+            payload: res.data
+        }))
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status, 'EDIT_SUPPLY_FAIL'))
+            dispatch({
+                type: EDIT_SUPPLY_FAIL
+            })
+        })
 }
 
 export const setSuppliesLoading = () => {

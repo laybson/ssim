@@ -7,6 +7,8 @@ export const GRADES_LOADING = 'GRADES_LOADING';
 
 export const GET_SUPPLIES = 'GET_SUPPLIES';
 export const ADD_SUPPLY = 'ADD_SUPPLY';
+export const EDIT_SUPPLY = 'EDIT_SUPPLY';
+export const EDIT_SUPPLY_FAIL = 'EDIT_SUPPLY_FAIL';
 export const ADD_SUPPLY_FAIL = 'ADD_SUPPLY_FAIL';
 export const DELETE_SUPPLY = 'DELETE_SUPPLY';
 export const SUPPLIES_LOADING = 'SUPPLIES_LOADING';

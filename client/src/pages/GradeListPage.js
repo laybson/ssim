@@ -5,6 +5,7 @@ import { Container, Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import Footer from '../components/Footer';
 
 const styles = theme => ({
     root: {
@@ -29,22 +30,25 @@ class GradeListPage extends Component {
 
     showGrades = (classes) => {
         return this.props.isAuthenticated ?
-        <Container className={classes.root}>
-            <GradeModal />
-            <GradeList />
-        </Container> : 
-        <Box className={classes.unlogged}>
-            <img
-                src="/school.png"
-                alt="Infantil"
-                style={{ height: '300px', margin:10 }}
-                />
-            <img
-                src="/elementary.png"
-                alt="Infantil"
-                style={{ height: '300px', margin:10  }}
-                />
-        </Box>
+            <Container className={classes.root}>
+                <GradeModal />
+                <GradeList />
+            </Container> :
+            <Box>
+                <Box className={classes.unlogged}>
+                    <img
+                        src="/school.png"
+                        alt="Infantil"
+                        style={{ height: '180px', margin:10 }}
+                        />
+                    <img
+                        src="/elementary.png"
+                        alt="Infantil"
+                        style={{ height: '180px', margin:10  }}
+                        />
+                </Box>
+                <Footer />
+            </Box>
     }
 
     render() {

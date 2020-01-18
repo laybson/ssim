@@ -1,4 +1,4 @@
-import { GET_SUPPLIES, ADD_SUPPLY, ADD_SUPPLY_FAIL, DELETE_SUPPLY, SUPPLIES_LOADING } from '../actions/types';
+import { GET_SUPPLIES, ADD_SUPPLY, EDIT_SUPPLY, EDIT_SUPPLY_FAIL, ADD_SUPPLY_FAIL, DELETE_SUPPLY, SUPPLIES_LOADING } from '../actions/types';
 
 const initialState = {
     supplies: [],
@@ -12,6 +12,16 @@ export default function(state = initialState, action) {
                 ...state,
                 supplies: action.payload,
                 loading: false
+            };
+        case EDIT_SUPPLY_FAIL:
+            return {
+                ...state,
+                loading: false
+            }
+        case EDIT_SUPPLY:
+            return {
+                ...state,
+                supplies: [action.payload, ...state.supplies]
             };
         case DELETE_SUPPLY:
             return {
