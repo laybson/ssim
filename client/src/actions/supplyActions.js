@@ -27,7 +27,18 @@ export const getGradeSupplies = id => dispatch => {
         ))
 }
 
+export const getImportedSupplies = id => {
+    return axios.get(`/api/supplies/grade/${id}`)
+        .then(res => {
+            return res.data
+        })
+        .catch(err => 
+            returnErrors(err.response.data, err.response.status)
+        )
+}
+
 export const addSupply = (supply) => (dispatch, getState) => {
+    console.log("HERE")
     axios.post('/api/supplies', supply, tokenConfig(getState))
         .then(res => dispatch({
             type: ADD_SUPPLY,

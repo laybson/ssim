@@ -74,7 +74,7 @@ class SupplyCard extends Component {
                             </Box>
                         </Tooltip>
                     </Grid>
-                    <Grid item xs={12} sm={1}>
+                    <Grid item xs={1}>
                         { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
                             <Tooltip title="Editar material">
                                 <Box>
@@ -85,7 +85,7 @@ class SupplyCard extends Component {
                             null
                         }
                     </Grid>
-                    <Grid item xs={12} sm={1}>
+                    <Grid item xs={1}>
                         { this.props.isAuthenticated && this.props.user.role === Role.Admin ?
                             <Tooltip title="Apagar material">
                                 <IconButton

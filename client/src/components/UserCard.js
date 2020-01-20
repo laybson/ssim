@@ -122,7 +122,7 @@ class UserCard extends Component {
                             { user.email }
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={1}>
+                    <Grid item xs={1}>
                         <Tooltip title={this.showEditTooltip()} placement="left">
                             <Box>
                                 <UserModal
@@ -130,7 +130,7 @@ class UserCard extends Component {
                             </Box>                            
                         </Tooltip>                      
                     </Grid>
-                    <Grid item xs={12} sm={1}>
+                    <Grid item xs={1}>
                         <Tooltip title={this.showDeleteTooltip()} placement="right">
                             <IconButton
                                 className={ classes.delete }

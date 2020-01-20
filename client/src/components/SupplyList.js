@@ -7,6 +7,7 @@ import { getGradeSupplies, deleteSupply } from '../actions/supplyActions';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import SupplyCard from './SupplyCard';
+import ImportSuppliesModal from './ImportSuppliesModal';
 
 const styles = theme => ({
     root: {
@@ -35,14 +36,19 @@ class SupplyList extends Component {
         this.props.deleteSupply(id);
     }
 
+    showImport = (supplies) => {
+        return supplies.length > 0 ? <Box></Box> : <ImportSuppliesModal />
+    }
+
     render() {
         const supplies = this.props.supply.supplies;
         const { classes } = this.props;        
 
         return(
             <Box>
+                { this.showImport(supplies) }
                 <ListGroup>
-                    <TransitionGroup className="grade-list">
+                    <TransitionGroup className="grade-list">                        
                         {supplies.map((i) => (
                             <CSSTransition key={i._id} timeout={500} classNames="fade">
                                 <ListGroupItem className={ classes.root }>

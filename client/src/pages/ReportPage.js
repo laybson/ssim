@@ -77,6 +77,33 @@ class ReportPage extends Component {
         return ""+received+"/"+totalReceiving
     }
 
+    getReceivedPendenciesString = (grade) => {
+        const supplies = this.getGradeSupplies(grade);
+        const students = this.getGradeStudents(grade);
+        let totalReceived = 0;
+        students.forEach(student => {
+            if(this.studentReceiveComplete(supplies, student)){
+                totalReceived = totalReceived + 1;
+            }           
+        })
+
+        return totalReceived+"/"+students.length;
+    }
+
+    studentReceiveComplete = (supplies, student) => {
+        return supplies.every(supply => {
+            if(!this.isReceivedSupply(supply, student)){
+                return false;
+            }else{
+                return true;
+            }
+        });
+    }
+
+    isReceivedSupply = (supply, student) => {
+        return student.receivedSupplies.some(rs => (rs.id === supply._id && !rs.incomplete))
+    }
+
     getReturnedSuppliesString = (grade) => {
         const supplies = this.getDidacticSupplies(grade);
         const students = this.getGradeStudents(grade);
@@ -91,6 +118,34 @@ class ReportPage extends Component {
         })
 
         return ""+returned+"/"+totalReturning
+    }
+
+    getReturnedPendenciesString = (grade) => {
+        const supplies = this.getDidacticSupplies(grade);
+        const students = this.getGradeStudents(grade);
+        let totalReturned = 0;
+        
+        students.forEach(student => {
+            if(this.studentReceiveComplete(supplies, student)){
+                totalReturned = totalReturned + 1;                
+            }           
+        })
+
+        return totalReturned+"/"+students.length;
+    }
+
+    studentReceiveComplete = (supplies, student) => {
+        return supplies.every(supply => {
+            if(supply.didactic && !this.isReturnedSupply(supply, student)){
+                return false;
+            }else{
+                return true;
+            }
+        });
+    }
+
+    isReturnedSupply = (supply, student) => {
+        return student.returnedSupplies.some(rs => rs.id === supply._id)
     }
 
     getGradeStudents = (grade) => {
@@ -128,7 +183,9 @@ class ReportPage extends Component {
                                 <TableCell className={ classes.head } align="right">Alunos</TableCell>
                                 <TableCell className={ classes.head } align="right">Materiais</TableCell>
                                 <TableCell className={ classes.head } align="right">Materiais Recebidos</TableCell>
+                                <TableCell className={ classes.head } align="right">Recebimentos Completos</TableCell>
                                 <TableCell className={ classes.head } align="right">Materiais Devolvidos</TableCell>
+                                <TableCell className={ classes.head } align="right">Devoluções Completas</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -138,7 +195,9 @@ class ReportPage extends Component {
                                     <TableCell align="right">{ this.getGradeStudents(i).length }</TableCell>
                                     <TableCell align="right">{ this.getGradeSupplies(i).length }</TableCell>
                                     <TableCell align="right">{ this.getReceivedSuppliesString(i) }</TableCell>
+                                    <TableCell align="right">{ this.getReceivedPendenciesString(i) }</TableCell>
                                     <TableCell align="right">{ this.getReturnedSuppliesString(i) }</TableCell>
+                                    <TableCell align="right">{ this.getReturnedPendenciesString(i) }</TableCell>
                                 </TableRow>
                             )) }
                         </TableBody>
