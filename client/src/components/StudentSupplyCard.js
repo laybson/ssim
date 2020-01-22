@@ -113,7 +113,7 @@ class StudentSupplyCard extends Component {
         this.setState({obs:this.getObs(this.props.supply)})
     }
 
-    getObs = (supply) => {
+    getObs = (supply) => {        
         if(this.isReceivedSupply(supply)){
             return this.props.student.receivedSupplies.find(ss => ss.id === supply._id).obs;
         }
@@ -208,6 +208,8 @@ class StudentSupplyCard extends Component {
         this.setState({
             [e.target.name]: e.target.value
         });
+        if(e.target.name === 'obs')
+            this.setObs(this.props.supply, e.target.value)
     }
 
     showObs = (classes) => {        

@@ -38,7 +38,6 @@ export const getImportedSupplies = id => {
 }
 
 export const addSupply = (supply) => (dispatch, getState) => {
-    console.log("HERE")
     axios.post('/api/supplies', supply, tokenConfig(getState))
         .then(res => dispatch({
             type: ADD_SUPPLY,
